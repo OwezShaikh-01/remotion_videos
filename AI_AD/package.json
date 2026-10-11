@@ -1,8 +1,11 @@
 {
-  "name": "inside-the-machine",
+  "name": "ai-motion-designer-ad",
   "version": "1.0.0",
-  "description": "My Remotion video",
-  "repository": {},
+  "description": "30-second Kinetic Typography & Motion Graphics Commercial in Remotion",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/OwezShaikh-01/remotion_videos.git"
+  },
   "license": "UNLICENSED",
   "private": true,
   "dependencies": {
@@ -22,8 +25,10 @@
     "typescript": "5.9.3"
   },
   "scripts": {
+    "start": "remotion studio",
     "dev": "remotion studio",
-    "build": "remotion bundle",
+    "render": "remotion render src/index.ts HireAIMotionDesigner out/hire-ai-motion.mp4",
+    "build": "remotion render src/index.ts HireAIMotionDesigner out/hire-ai-motion.mp4",
     "upgrade": "remotion upgrade",
     "lint": "eslint src && tsc"
   }

@@ -19,18 +19,42 @@ export const MainAdComposition: React.FC = () => {
         overflow: "hidden",
       }}
     >
+      {/* Global SVG Filter Definitions for Optical / Chromatic Effects */}
+      <svg width="0" height="0" style={{ position: "absolute", pointerEvents: "none" }}>
+        <defs>
+          <filter id="redGlow">
+            <feColorMatrix
+              type="matrix"
+              values="1 0 0 0 0
+                      0 0 0 0 0
+                      0 0 0 0 0
+                      0 0 0 1 0"
+            />
+          </filter>
+          <filter id="blueGlow">
+            <feColorMatrix
+              type="matrix"
+              values="0 0 0 0 0
+                      0 1 0 0 0
+                      0 0 1 0 0
+                      0 0 0 1 0"
+            />
+          </filter>
+        </defs>
+      </svg>
+
       {/* Scene 1: The Hook (0 - 4.6s) */}
       <Sequence from={0} durationInFrames={140}>
         <Scene1Hook />
       </Sequence>
 
-      {/* Scene 2: The Agony of Traditional Workflows (4.3s - 9.3s) */}
-      <Sequence from={130} durationInFrames={150}>
+      {/* Scene 2: The Agony of Traditional Workflows (4.2s - 9.2s) */}
+      <Sequence from={126} durationInFrames={150}>
         <Scene2Problem />
       </Sequence>
 
-      {/* Scene 3: Meet Your Autonomous AI Motion Designer (9.0s - 14.6s) */}
-      <Sequence from={270} durationInFrames={170}>
+      {/* Scene 3: Meet Your Autonomous AI Motion Designer (8.9s - 14.6s) */}
+      <Sequence from={268} durationInFrames={170}>
         <Scene3MeetAI />
       </Sequence>
 
@@ -40,7 +64,7 @@ export const MainAdComposition: React.FC = () => {
       </Sequence>
 
       {/* Scene 5: Scalable Value Proposition (21.0s - 25.8s) */}
-      <Sequence from={630} durationInFrames={145}>
+      <Sequence from={632} durationInFrames={145}>
         <Scene5ValueProp />
       </Sequence>
 
