@@ -1,3 +1,4 @@
+import React from "react";
 import { spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { COLORS, FONTS, SPRINGS } from "../theme";
 
@@ -17,10 +18,10 @@ export const BadgeSeal: React.FC<BadgeSealProps> = ({
   text = "• AUTONOMOUS MOTION DESIGN • STUDIO AI • PREMIUM • 2026 ",
   centerText = "AI",
   subText = "MOTION",
-  color = COLORS.ink,
-  bg = COLORS.acidYellow,
+  color = COLORS.obsidian,
+  bg = COLORS.galleryIvory,
   delay = 0,
-  rotationSpeed = 0.8,
+  rotationSpeed = 0.35,
 }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
@@ -28,7 +29,7 @@ export const BadgeSeal: React.FC<BadgeSealProps> = ({
   const scaleSpring = spring({
     frame: frame - delay,
     fps,
-    config: SPRINGS.bouncy,
+    config: SPRINGS.silky,
   });
 
   const rotation = (frame * rotationSpeed) % 360;
@@ -52,7 +53,8 @@ export const BadgeSeal: React.FC<BadgeSealProps> = ({
           inset: 0,
           borderRadius: "50%",
           backgroundColor: bg,
-          boxShadow: "0 10px 30px rgba(0,0,0,0.18)",
+          border: `1px solid rgba(255, 255, 255, 0.12)`,
+          boxShadow: "0 14px 40px rgba(0, 0, 0, 0.2)",
         }}
       />
 
@@ -76,10 +78,11 @@ export const BadgeSeal: React.FC<BadgeSealProps> = ({
         </defs>
         <text
           fill={color}
-          fontSize={size * 0.082}
-          fontWeight="800"
+          fontSize={size * 0.08}
+          fontWeight="700"
           fontFamily={FONTS.display}
           letterSpacing="2.2"
+          opacity={0.8}
         >
           <textPath href={`#circlePath-${size}`} startOffset="0%">
             {text}
@@ -102,11 +105,11 @@ export const BadgeSeal: React.FC<BadgeSealProps> = ({
         <span
           style={{
             fontFamily: FONTS.display,
-            fontWeight: 900,
+            fontWeight: 800,
             fontSize: size * 0.22,
             lineHeight: 0.9,
             color,
-            letterSpacing: "-0.05em",
+            letterSpacing: "-0.04em",
           }}
         >
           {centerText}
@@ -115,11 +118,12 @@ export const BadgeSeal: React.FC<BadgeSealProps> = ({
           <span
             style={{
               fontFamily: FONTS.mono,
-              fontWeight: 700,
+              fontWeight: 600,
               fontSize: size * 0.075,
               color,
               letterSpacing: "0.15em",
-              marginTop: 2,
+              marginTop: 3,
+              opacity: 0.7,
             }}
           >
             {subText}

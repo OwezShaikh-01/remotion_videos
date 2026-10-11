@@ -1,3 +1,4 @@
+import React from "react";
 import { useCurrentFrame } from "remotion";
 import { COLORS, FONTS } from "../theme";
 
@@ -11,26 +12,25 @@ interface BezierGraphProps {
 export const BezierGraph: React.FC<BezierGraphProps> = ({
   width = 540,
   height = 320,
-  color = COLORS.white,
-  accentColor = COLORS.vermilion,
+  color = COLORS.titanium,
+  accentColor = COLORS.cobalt,
 }) => {
   const frame = useCurrentFrame();
 
-  // Oscillating control points to simulate dynamic easing manipulation
-  const p1x = 120 + Math.sin(frame * 0.08) * 40;
-  const p1y = 260 - Math.cos(frame * 0.08) * 80;
+  // Gentle, fluid control points (smooth breathing, zero jitter)
+  const p1x = 120 + Math.sin(frame * 0.03) * 25;
+  const p1y = 250 - Math.cos(frame * 0.03) * 45;
 
-  const p2x = 420 - Math.cos(frame * 0.09) * 50;
-  const p2y = 60 + Math.sin(frame * 0.09) * 40;
+  const p2x = 420 - Math.cos(frame * 0.035) * 30;
+  const p2y = 70 + Math.sin(frame * 0.035) * 25;
 
   const startX = 60;
-  const startY = 270;
+  const startY = 260;
   const endX = 480;
-  const endY = 50;
+  const endY = 60;
 
-  // Ball traveling along the curve
-  const t = (Math.sin(frame * 0.06) + 1) / 2; // 0 to 1
-  // Cubic Bezier formula: B(t) = (1-t)^3 P0 + 3(1-t)^2 t P1 + 3(1-t) t^2 P2 + t^3 P3
+  // Smooth, fluid traveling orb
+  const t = (Math.sin(frame * 0.03) + 1) / 2; // 0 to 1
   const bx =
     Math.pow(1 - t, 3) * startX +
     3 * Math.pow(1 - t, 2) * t * p1x +
@@ -48,14 +48,14 @@ export const BezierGraph: React.FC<BezierGraphProps> = ({
       style={{
         width,
         height,
-        backgroundColor: "rgba(24, 26, 31, 0.85)",
-        borderRadius: 20,
-        border: "1px solid rgba(255,255,255,0.12)",
-        backdropFilter: "blur(20px)",
-        padding: "24px",
+        backgroundColor: "rgba(19, 21, 27, 0.75)",
+        borderRadius: 24,
+        border: "1px solid rgba(255, 255, 255, 0.1)",
+        backdropFilter: "blur(28px)",
+        padding: "26px",
         boxSizing: "border-box",
         position: "relative",
-        boxShadow: "0 24px 60px rgba(0,0,0,0.4)",
+        boxShadow: "0 24px 60px rgba(0, 0, 0, 0.35)",
       }}
     >
       {/* Editor Header */}
@@ -64,18 +64,19 @@ export const BezierGraph: React.FC<BezierGraphProps> = ({
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          marginBottom: 12,
-          borderBottom: "1px solid rgba(255,255,255,0.08)",
-          paddingBottom: 10,
+          marginBottom: 16,
+          borderBottom: "1px solid rgba(255, 255, 255, 0.06)",
+          paddingBottom: 12,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <div
             style={{
-              width: 8,
-              height: 8,
+              width: 7,
+              height: 7,
               borderRadius: "50%",
               backgroundColor: accentColor,
+              boxShadow: `0 0 10px ${accentColor}`,
             }}
           />
           <span
@@ -83,37 +84,37 @@ export const BezierGraph: React.FC<BezierGraphProps> = ({
               fontFamily: FONTS.mono,
               fontSize: 12,
               fontWeight: 700,
-              color: "rgba(255,255,255,0.8)",
-              letterSpacing: "0.1em",
+              color: "rgba(255, 255, 255, 0.8)",
+              letterSpacing: "0.12em",
             }}
           >
-            VELOCITY GRAPH / CUBIC-EASING
+            VELOCITY CURVE / CUBIC-EASING
           </span>
         </div>
         <span
           style={{
             fontFamily: FONTS.mono,
             fontSize: 11,
-            color: COLORS.acidYellow,
+            color: "rgba(255, 255, 255, 0.5)",
           }}
         >
-          {`t = ${t.toFixed(2)} [EASE-OUT-EXPO]`}
+          {`t = ${t.toFixed(2)} [FLUID-DECELERATION]`}
         </span>
       </div>
 
       <svg
-        width={width - 48}
-        height={height - 80}
-        viewBox={`0 0 ${width - 48} ${height - 80}`}
+        width={width - 52}
+        height={height - 84}
+        viewBox={`0 0 ${width - 52} ${height - 84}`}
         style={{ overflow: "visible" }}
       >
         {/* Graph Grid Lines */}
         <line
           x1={40}
-          y1={50}
+          y1={60}
           x2={width - 80}
-          y2={50}
-          stroke="rgba(255,255,255,0.07)"
+          y2={60}
+          stroke="rgba(255, 255, 255, 0.05)"
           strokeDasharray="4 4"
         />
         <line
@@ -121,15 +122,15 @@ export const BezierGraph: React.FC<BezierGraphProps> = ({
           y1={160}
           x2={width - 80}
           y2={160}
-          stroke="rgba(255,255,255,0.07)"
+          stroke="rgba(255, 255, 255, 0.05)"
           strokeDasharray="4 4"
         />
         <line
           x1={40}
-          y1={270}
+          y1={260}
           x2={width - 80}
-          y2={270}
-          stroke="rgba(255,255,255,0.12)"
+          y2={260}
+          stroke="rgba(255, 255, 255, 0.1)"
         />
 
         {/* Tangent Handle Lines */}
@@ -140,7 +141,7 @@ export const BezierGraph: React.FC<BezierGraphProps> = ({
           y2={p1y}
           stroke={accentColor}
           strokeWidth={1.5}
-          opacity={0.6}
+          opacity={0.5}
         />
         <line
           x1={endX}
@@ -149,54 +150,54 @@ export const BezierGraph: React.FC<BezierGraphProps> = ({
           y2={p2y}
           stroke={COLORS.cobalt}
           strokeWidth={1.5}
-          opacity={0.6}
+          opacity={0.5}
         />
 
         {/* Tangent Handle Circles */}
-        <circle cx={p1x} cy={p1y} r={5} fill={accentColor} />
-        <circle cx={p2x} cy={p2y} r={5} fill={COLORS.cobalt} />
+        <circle cx={p1x} cy={p1y} r={4.5} fill={accentColor} />
+        <circle cx={p2x} cy={p2y} r={4.5} fill={COLORS.cobalt} />
+
+        {/* Gradient fill under curve */}
+        <defs>
+          <linearGradient id="fluidCurveFill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor={accentColor} stopOpacity="0.18" />
+            <stop offset="100%" stopColor={accentColor} stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        <path
+          d={`M ${startX} ${startY} C ${p1x} ${p1y}, ${p2x} ${p2y}, ${endX} ${endY} L ${endX} 260 L ${startX} 260 Z`}
+          fill="url(#fluidCurveFill)"
+        />
 
         {/* Main Bezier Curve */}
         <path
           d={`M ${startX} ${startY} C ${p1x} ${p1y}, ${p2x} ${p2y}, ${endX} ${endY}`}
           fill="none"
           stroke={color}
-          strokeWidth={3.5}
+          strokeWidth={2.8}
           strokeLinecap="round"
         />
 
-        {/* Gradient fill under curve */}
-        <defs>
-          <linearGradient id="curveFill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor={accentColor} stopOpacity={0.25} />
-            <stop offset="100%" stopColor={accentColor} stopOpacity={0} />
-          </linearGradient>
-        </defs>
-        <path
-          d={`M ${startX} ${startY} C ${p1x} ${p1y}, ${p2x} ${p2y}, ${endX} ${endY} L ${endX} 270 L ${startX} 270 Z`}
-          fill="url(#curveFill)"
-        />
-
         {/* Traveling Ball on curve */}
-        <circle cx={bx} cy={by} r={10} fill={accentColor} />
+        <circle cx={bx} cy={by} r={8} fill={accentColor} />
         <circle
           cx={bx}
           cy={by}
-          r={18}
+          r={16}
           fill="none"
           stroke={accentColor}
-          strokeWidth={1.5}
-          opacity={0.5}
+          strokeWidth={1.2}
+          opacity={0.4}
         />
 
         {/* Keyframe Diamond Marks */}
         <polygon
-          points={`${startX},${startY - 6} ${startX + 6},${startY} ${startX},${startY + 6} ${startX - 6},${startY}`}
-          fill={COLORS.white}
+          points={`${startX},${startY - 5} ${startX + 5},${startY} ${startX},${startY + 5} ${startX - 5},${startY}`}
+          fill={COLORS.titanium}
         />
         <polygon
-          points={`${endX},${endY - 6} ${endX + 6},${endY} ${endX},${endY + 6} ${endX - 6},${endY}`}
-          fill={COLORS.white}
+          points={`${endX},${endY - 5} ${endX + 5},${endY} ${endX},${endY + 5} ${endX - 5},${endY}`}
+          fill={COLORS.titanium}
         />
       </svg>
     </div>

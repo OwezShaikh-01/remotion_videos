@@ -3,7 +3,7 @@
 A high-end, 30-second kinetic typography and motion graphics commercial built with **Remotion** and **React**.
 
 > **Theme:** *"Hire Your Next Lead Motion Designer: AI"*  
-> **Aesthetic:** Swiss Modernist & Contemporary Editorial Agency (Pentagram / Studio Dumbar / Buck style). Zero cyberpunk/tech clichés.  
+> **Aesthetic:** High-End Editorial & Luxury Architectural (Apple Keynote / Stripe / Pentagram style). Smooth, fluid, confident motion with zero chaos or cyberpunk tropes.  
 > **Specs:** 30.0 Seconds (`900 frames @ 30 FPS`), 1920×1080 Full HD.
 
 ---
@@ -24,7 +24,7 @@ npm run dev
 # or: npm start
 ```
 
-This automatically opens Remotion Studio at `http://localhost:3000` where you can scrub individual frames, inspect spring curves, and watch the full 30s playback.
+This automatically opens Remotion Studio at `http://localhost:3000` where you can scrub individual frames, inspect fluid easing curves, and watch the full 30s playback.
 
 ---
 
@@ -43,31 +43,29 @@ out/hire-ai-motion.mp4
 
 ---
 
-## 📐 Architecture & Key Motion Techniques
+## 📐 Architecture & Fluid Motion Principles
 
-1. **Character-Level 3D Kinetic Typography (`ExpressiveText.tsx`):**
-   - Per-character staggered wave cascades.
-   - 3D perspective flips (`rotateX`, `rotateY`, `translateZ`).
-   - Dynamic kerning and optical expansion.
+1. **Fluid Masked Typography (`ExpressiveText.tsx`):**
+   - Premium overflow-hidden line and word reveal clipping.
+   - Smooth, non-linear ease-out curve (`cubic-bezier(0.16, 1, 0.3, 1)`).
+   - Staggered editorial cadence with subtle upward glide.
 
-2. **Physics & Animation Principles (`motion.ts`):**
-   - **Anticipation Curves:** Recoil backwards before explosive forward motion.
-   - **Squash & Stretch:** Dynamic deformation based on instantaneous frame velocity.
-   - **Harmonic Drift:** Micro-drift so elements are never frozen dead.
-   - **Follow-through & Secondary Action:** Delayed inertia across child elements.
+2. **Damped Physics & Physics Tuning (`motion.ts` & `theme.ts`):**
+   - **Silky Springs:** Critical damping (`mass: 0.8-1.0`, `stiffness: 70-95`, `damping: 26-30`) eliminating harsh bounces and jarring recoils.
+   - **Subtle Harmonic Drift:** Gentle ambient floating motion preventing static dead frames.
+   - **Zero Shake & Glitch:** Clean, confident camera glides and studio lighting transitions.
 
-3. **Dynamic 3D Camera Rig (`CameraRig.tsx`):**
-   - Continuous focal tracking and parallax depth.
-   - Screen shake with decay on impact frames.
-   - Chromatic aberration ghosting on explosive hits.
+3. **Cinematic Studio Camera & Atmosphere (`CameraRig.tsx`):**
+   - Continuous slow focal dolly zoom (`1.0 -> 1.03`).
+   - Deep obsidian canvas with soft diffused studio lighting auras.
+   - Fine architectural grid lines and 35mm print-grade film grain.
 
-4. **Visual Accents & Graphic Elements:**
-   - **`ImpactBurst.tsx`:** Shockwave rings and radial kinetic spark rays.
-   - **`BezierGraph.tsx`:** Interactive After Effects-style cubic-bezier speed curve visualizer with live tangent handles.
-   - **`LiquidGeometry.tsx`:** Organic harmonic SVG path morphing.
-   - **`BadgeSeal.tsx`:** Rotating studio stamp with curved circular text path.
-   - **`Marquee.tsx`:** High-speed angled kinetic ticker loops.
-   - **`NoiseOverlay.tsx`:** 35mm print-grade SVG turbulence film grain.
+4. **Visual Accents & Refined Graphic Systems:**
+   - **`BezierGraph.tsx`:** Serene cubic-bezier curve instrument with live tangent handles and speed metrics.
+   - **`LiquidGeometry.tsx`:** Ambient diffused studio light auras.
+   - **`BadgeSeal.tsx`:** Stately rotating studio seal with silky damped spin.
+   - **`Marquee.tsx`:** Slow, dignified horizontal ticker glide.
+   - **`NoiseOverlay.tsx`:** Subtle 3.5% print-grade SVG film grain.
 
 ---
 

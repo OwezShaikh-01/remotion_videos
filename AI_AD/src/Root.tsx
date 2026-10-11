@@ -15,55 +15,31 @@ export const MainAdComposition: React.FC = () => {
         width: "100%",
         height: "100%",
         position: "relative",
-        backgroundColor: "#0E1013",
+        backgroundColor: "#090A0E",
         overflow: "hidden",
       }}
     >
-      {/* Global SVG Filter Definitions for Optical / Chromatic Effects */}
-      <svg width="0" height="0" style={{ position: "absolute", pointerEvents: "none" }}>
-        <defs>
-          <filter id="redGlow">
-            <feColorMatrix
-              type="matrix"
-              values="1 0 0 0 0
-                      0 0 0 0 0
-                      0 0 0 0 0
-                      0 0 0 1 0"
-            />
-          </filter>
-          <filter id="blueGlow">
-            <feColorMatrix
-              type="matrix"
-              values="0 0 0 0 0
-                      0 1 0 0 0
-                      0 0 1 0 0
-                      0 0 0 1 0"
-            />
-          </filter>
-        </defs>
-      </svg>
-
-      {/* Scene 1: The Hook (0 - 4.6s) */}
+      {/* Scene 1: The New Standard (0 - 4.6s) */}
       <Sequence from={0} durationInFrames={140}>
         <Scene1Hook />
       </Sequence>
 
-      {/* Scene 2: The Agony of Traditional Workflows (4.2s - 9.2s) */}
+      {/* Scene 2: The Friction of the Past (4.2s - 9.2s) */}
       <Sequence from={126} durationInFrames={150}>
         <Scene2Problem />
       </Sequence>
 
-      {/* Scene 3: Meet Your Autonomous AI Motion Designer (8.9s - 14.6s) */}
+      {/* Scene 3: The Autonomous Creative Instrument (8.9s - 14.6s) */}
       <Sequence from={268} durationInFrames={170}>
         <Scene3MeetAI />
       </Sequence>
 
-      {/* Scene 4: What Can It Create? Showreel (14.3s - 21.3s) */}
+      {/* Scene 4: The Capabilities Showreel (14.3s - 21.3s) */}
       <Sequence from={430} durationInFrames={210}>
         <Scene4Showcase />
       </Sequence>
 
-      {/* Scene 5: Scalable Value Proposition (21.0s - 25.8s) */}
+      {/* Scene 5: Scale Unlimited Force Multiplier (21.0s - 25.8s) */}
       <Sequence from={632} durationInFrames={145}>
         <Scene5ValueProp />
       </Sequence>
@@ -73,8 +49,8 @@ export const MainAdComposition: React.FC = () => {
         <Scene6CallToAction />
       </Sequence>
 
-      {/* Global Cinematic Noise Grain Layer */}
-      <NoiseOverlay opacity={0.045} />
+      {/* Subtle 35mm Fine Film Grain Texture */}
+      <NoiseOverlay opacity={0.035} />
     </div>
   );
 };

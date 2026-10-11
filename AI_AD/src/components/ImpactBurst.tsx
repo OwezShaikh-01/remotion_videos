@@ -1,40 +1,37 @@
 import React from "react";
-import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
-import { COLORS, SPRINGS } from "../theme";
+import { interpolate, useCurrentFrame } from "remotion";
+import { COLORS } from "../theme";
+import { FLUID_EASE } from "../utils/motion";
 
 interface ImpactBurstProps {
   hitFrame: number;
   x: number;
   y: number;
   color?: string;
-  rayCount?: number;
   maxRadius?: number;
+  rayCount?: number; // retained for compatibility
 }
 
 export const ImpactBurst: React.FC<ImpactBurstProps> = ({
   hitFrame,
   x,
   y,
-  color = COLORS.acidYellow,
-  rayCount = 8,
-  maxRadius = 160,
+  color = COLORS.cobalt,
+  maxRadius = 140,
 }) => {
   const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
 
   const elapsed = frame - hitFrame;
-  if (elapsed < 0 || elapsed > 24) return null;
+  if (elapsed < 0 || elapsed > 30) return null;
 
-  const burstSpring = spring({
-    frame: elapsed,
-    fps,
-    config: SPRINGS.punchy,
+  const progress = interpolate(elapsed, [0, 28], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+    easing: FLUID_EASE,
   });
 
-  const radius = interpolate(burstSpring, [0, 1], [10, maxRadius]);
-  const opacity = interpolate(elapsed, [0, 6, 22], [1, 1, 0]);
-  const shockwaveRadius = interpolate(burstSpring, [0, 1], [5, maxRadius * 1.3]);
-  const shockwaveOpacity = interpolate(elapsed, [0, 4, 18], [0.8, 0.6, 0]);
+  const radius = interpolate(progress, [0, 1], [15, maxRadius]);
+  const opacity = interpolate(progress, [0, 0.25, 1], [0.55, 0.4, 0]);
 
   return (
     <div
@@ -43,74 +40,38 @@ export const ImpactBurst: React.FC<ImpactBurstProps> = ({
         left: x,
         top: y,
         pointerEvents: "none",
-        zIndex: 80,
+        zIndex: 5,
       }}
     >
       <svg
-        width={maxRadius * 3}
-        height={maxRadius * 3}
-        viewBox={`${-maxRadius * 1.5} ${-maxRadius * 1.5} ${maxRadius * 3} ${maxRadius * 3}`}
+        width={maxRadius * 2.5}
+        height={maxRadius * 2.5}
+        viewBox={`${-maxRadius * 1.25} ${-maxRadius * 1.25} ${maxRadius * 2.5} ${maxRadius * 2.5}`}
         style={{
           position: "absolute",
           transform: "translate(-50%, -50%)",
           overflow: "visible",
         }}
       >
-        {/* Expanding shockwave ring */}
+        {/* Soft, elegant expanding concentric ring */}
         <circle
           cx="0"
           cy="0"
-          r={shockwaveRadius}
+          r={radius}
           fill="none"
           stroke={color}
-          strokeWidth="3"
-          opacity={shockwaveOpacity}
+          strokeWidth="1.5"
+          opacity={opacity}
         />
-
-        {/* Outer dotted echo ring */}
+        {/* Whisper-soft inner echo */}
         <circle
           cx="0"
           cy="0"
-          r={shockwaveRadius * 0.75}
+          r={radius * 0.72}
           fill="none"
-          stroke={COLORS.white}
-          strokeWidth="1.5"
-          strokeDasharray="6 8"
-          opacity={shockwaveOpacity * 0.8}
-        />
-
-        {/* Radial burst rays */}
-        {Array.from({ length: rayCount }).map((_, i) => {
-          const angle = (i * 360) / rayCount;
-          const rad = (angle * Math.PI) / 180;
-          const innerR = radius * 0.45;
-          const outerR = radius;
-
-          const x1 = Math.cos(rad) * innerR;
-          const y1 = Math.sin(rad) * innerR;
-          const x2 = Math.cos(rad) * outerR;
-          const y2 = Math.sin(rad) * outerR;
-
-          return (
-            <line
-              key={i}
-              x1={x1}
-              y1={y1}
-              x2={x2}
-              y2={y2}
-              stroke={color}
-              strokeWidth="4"
-              strokeLinecap="round"
-              opacity={opacity}
-            />
-          );
-        })}
-
-        {/* Center spark diamond */}
-        <polygon
-          points={`0,${-12 * (1 - elapsed / 20)} ${12 * (1 - elapsed / 20)},0 0,${12 * (1 - elapsed / 20)} ${-12 * (1 - elapsed / 20)},0`}
-          fill={COLORS.white}
-          opacity={opacity}
+          stroke={color}
+          strokeWidth="1"
+          opacity={opacity * 0.5}
         />
       </svg>
     </div>

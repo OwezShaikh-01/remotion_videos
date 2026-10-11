@@ -4,82 +4,70 @@ import { COLORS, FONTS, SPRINGS } from "../theme";
 import { ExpressiveText } from "../components/ExpressiveText";
 import { BezierGraph } from "../components/BezierGraph";
 import { BadgeSeal } from "../components/BadgeSeal";
-import { Asterisk, PillTag, ConcentricRings } from "../components/GeometricShapes";
+import { PillTag } from "../components/GeometricShapes";
 import { StudioHeader } from "../components/StudioHeader";
 import { CameraRig } from "../components/CameraRig";
-import { ImpactBurst } from "../components/ImpactBurst";
+import { LiquidGeometry } from "../components/LiquidGeometry";
+import { FLUID_EASE } from "../utils/motion";
 
 export const Scene3MeetAI: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  // Entrance whip
-  const enterSpring = spring({ frame, fps, config: SPRINGS.smooth });
-  const enterScale = interpolate(enterSpring, [0, 1], [0.9, 1]);
+  // Smooth entrance
+  const enterSpring = spring({ frame, fps, config: SPRINGS.silky });
+  const enterScale = interpolate(enterSpring, [0, 1], [0.98, 1]);
   const enterOpacity = interpolate(enterSpring, [0, 0.4, 1], [0, 1, 1]);
 
-  // Graph appearance spring with juicy bounce
-  const graphSpring = spring({
-    frame: frame - 20,
-    fps,
-    config: SPRINGS.bouncy,
+  // Graph appearance
+  const graphProgress = interpolate(frame, [16, 42], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+    easing: FLUID_EASE,
   });
 
-  // Outro transition (frames 148-170)
-  const exitSlide = spring({
-    frame: frame - 150,
-    fps,
-    config: SPRINGS.punchy,
+  // Fluid scene exit transition (frames 150-170)
+  const exitProgress = interpolate(frame, [150, 170], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+    easing: FLUID_EASE,
   });
-  const exitScale = interpolate(exitSlide, [0, 1], [1, 1.25]);
-  const exitOpacity = interpolate(exitSlide, [0, 0.8, 1], [1, 0.9, 0]);
+  const exitOpacity = interpolate(exitProgress, [0, 0.8, 1], [1, 0.9, 0]);
 
   return (
     <AbsoluteFill
       style={{
-        backgroundColor: "#070E24", // Deep luxury Cobalt Night
-        color: COLORS.white,
+        backgroundColor: "#070B18", // Deep luxury Midnight Navy
+        color: COLORS.titanium,
         fontFamily: FONTS.display,
-        transform: `scale(${enterScale * exitScale})`,
+        transform: `scale(${enterScale})`,
         opacity: enterOpacity * exitOpacity,
         overflow: "hidden",
       }}
     >
-      <CameraRig
-        impactFrames={[10, 24, 70]}
-        zoomStart={1}
-        zoomEnd={1.06}
-        panXStart={0}
-        panXEnd={-25}
-      >
-        <StudioHeader tagline="INNOVATION / 03 • THE REVOLUTION" />
+      <CameraRig zoomStart={1} zoomEnd={1.03} panXStart={0} panXEnd={-15}>
+        <StudioHeader tagline="INNOVATION / 03 • THE AUTONOMOUS ENGINE" />
 
-        {/* Dynamic Concentric Rings in background */}
-        <div style={{ position: "absolute", right: -50, top: "45%", transform: "translateY(-50%)", opacity: 0.35 }}>
-          <ConcentricRings count={5} color={COLORS.cobaltLight} baseRadius={60} delay={10} />
+        {/* Ambient Soft Studio Glows */}
+        <div style={{ position: "absolute", top: "25%", right: "20%", opacity: 0.5 }}>
+          <LiquidGeometry size={650} color={COLORS.cobalt} delay={0} />
+        </div>
+        <div style={{ position: "absolute", bottom: "15%", left: "15%", opacity: 0.3 }}>
+          <LiquidGeometry size={500} color={COLORS.amber} delay={12} />
         </div>
 
-        {/* Ambient Grid */}
+        {/* Subtle Architectural Grid */}
         <div
           style={{
             position: "absolute",
             inset: -40,
-            opacity: 0.1,
-            backgroundImage: `linear-gradient(${COLORS.cobaltLight} 1px, transparent 1px), linear-gradient(90deg, ${COLORS.cobaltLight} 1px, transparent 1px)`,
+            opacity: 0.05,
+            backgroundImage: `linear-gradient(${COLORS.titanium} 1px, transparent 1px), linear-gradient(90deg, ${COLORS.titanium} 1px, transparent 1px)`,
             backgroundSize: "72px 72px",
           }}
         />
 
-        {/* Decorative Asterisk */}
-        <div style={{ position: "absolute", top: 120, right: 100 }}>
-          <Asterisk size={85} color={COLORS.acidYellow} rotationSpeed={1.8} />
-        </div>
-
-        {/* Impact Bursts */}
-        <ImpactBurst hitFrame={10} x={420} y={420} color={COLORS.acidYellow} />
-        <ImpactBurst hitFrame={24} x={480} y={540} color={COLORS.white} rayCount={10} />
-
-        {/* Left Column: Big Kinetic Typography & Value Props */}
+        {/* Left Column: Big Fluid Typography */}
         <div
           style={{
             position: "absolute",
@@ -95,32 +83,33 @@ export const Scene3MeetAI: React.FC = () => {
               display: "inline-flex",
               alignItems: "center",
               gap: 12,
-              backgroundColor: "rgba(228, 248, 53, 0.14)",
-              border: `1.5px solid ${COLORS.acidYellow}`,
-              padding: "10px 24px",
+              backgroundColor: "rgba(13, 37, 244, 0.12)",
+              border: "1px solid rgba(13, 37, 244, 0.35)",
+              padding: "8px 22px",
               borderRadius: 999,
               marginBottom: 30,
+              backdropFilter: "blur(16px)",
             }}
           >
             <span
               style={{
-                width: 9,
-                height: 9,
+                width: 7,
+                height: 7,
                 borderRadius: "50%",
-                backgroundColor: COLORS.acidYellow,
-                boxShadow: `0 0 12px ${COLORS.acidYellow}`,
+                backgroundColor: COLORS.cobalt,
+                boxShadow: `0 0 10px ${COLORS.cobalt}`,
               }}
             />
             <span
               style={{
                 fontFamily: FONTS.mono,
-                fontSize: 13,
-                fontWeight: 800,
-                color: COLORS.acidYellow,
+                fontSize: 12,
+                fontWeight: 700,
+                color: COLORS.titanium,
                 letterSpacing: "0.18em",
               }}
             >
-              ENTER THE NEXT PARADIGM
+              NEXT-GENERATION CREATIVE INSTRUMENT
             </span>
           </div>
 
@@ -128,105 +117,104 @@ export const Scene3MeetAI: React.FC = () => {
             <ExpressiveText
               text="MEET YOUR NEW LEAD"
               startDelay={6}
-              charStagger={1.2}
-              color={COLORS.white}
+              wordStagger={3}
+              color={COLORS.titanium}
               fontSize={82}
               fontWeight={900}
               letterSpacing="-0.04em"
-              direction="3d-flip"
             />
           </div>
 
-          <div style={{ marginBottom: 24 }}>
+          <div style={{ marginBottom: 26 }}>
             <ExpressiveText
               text="MOTION DESIGNER."
               startDelay={16}
-              charStagger={1.4}
-              color={COLORS.acidYellow}
+              wordStagger={3}
+              color={COLORS.titanium}
               fontSize={92}
               fontWeight={900}
               letterSpacing="-0.05em"
-              highlightWords={[{ word: "DESIGNER.", color: COLORS.acidYellow }]}
-              direction="3d-flip"
+              highlightWords={[{ word: "DESIGNER.", color: COLORS.cobalt }]}
             />
           </div>
 
-          <div style={{ maxWidth: 780, marginBottom: 36 }}>
+          <div style={{ maxWidth: 780, marginBottom: 38 }}>
             <p
               style={{
                 fontSize: 24,
-                color: "rgba(255, 255, 255, 0.78)",
-                lineHeight: 1.45,
+                color: "rgba(248, 249, 250, 0.65)",
+                lineHeight: 1.5,
                 fontWeight: 400,
                 margin: 0,
               }}
             >
-              Autonomous choreography. Millisecond iteration. Math-perfect easing curves.
-              Ready to design 24 hours a day without burnout.
+              Algorithmic choreography. Sub-millisecond timing. Timeless graphic taste.
+              Ready to design, animate, and scale 24 hours a day without friction.
             </p>
           </div>
 
-          {/* Metric Badges with staggered bouncy spring */}
+          {/* Metric Badges with Silky Fluid Stagger */}
           <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
             <PillTag
-              label="⚡ 120× FASTER RENDERS"
-              color={COLORS.white}
-              bg="rgba(255, 59, 20, 0.28)"
-              border="1.5px solid rgba(255, 59, 20, 0.6)"
-              delay={30}
+              label="⚡ INSTANTANEOUS ITERATION"
+              color={COLORS.titanium}
+              bg="rgba(13, 37, 244, 0.15)"
+              border="1px solid rgba(13, 37, 244, 0.4)"
+              delay={24}
             />
             <PillTag
-              label="🎯 ZERO KEYFRAME FATIGUE"
-              color={COLORS.acidYellow}
-              bg="rgba(228, 248, 53, 0.18)"
-              border="1.5px solid rgba(228, 248, 53, 0.5)"
-              delay={38}
+              label="🎯 MATHEMATICAL EASING"
+              color={COLORS.titanium}
+              bg="rgba(255, 255, 255, 0.05)"
+              border="1px solid rgba(255, 255, 255, 0.15)"
+              delay={32}
             />
             <PillTag
-              label="💎 STUDIO-GRADE CRAFT"
-              color={COLORS.white}
-              bg="rgba(255, 255, 255, 0.15)"
-              border="1.5px solid rgba(255, 255, 255, 0.3)"
-              delay={46}
+              label="💎 STUDIO-GRADE FINISH"
+              color={COLORS.titanium}
+              bg="rgba(255, 152, 0, 0.12)"
+              border="1px solid rgba(255, 152, 0, 0.35)"
+              delay={40}
             />
           </div>
         </div>
 
-        {/* Right Column: Speed Bezier Graph Editor Showcase */}
+        {/* Right Column: Refined Bezier Velocity Curve Editor */}
         <div
           style={{
             position: "absolute",
             right: 120,
             top: "50%",
-            transform: `translateY(-50%) scale(${graphSpring})`,
+            transform: `translateY(-50%) translate3d(0, ${interpolate(graphProgress, [0, 1], [40, 0])}px, 0)`,
+            opacity: graphProgress,
             transformOrigin: "center right",
             zIndex: 10,
           }}
         >
-          <BezierGraph width={640} height={390} accentColor={COLORS.vermilion} />
+          <BezierGraph width={640} height={390} accentColor={COLORS.cobalt} />
 
           <div
             style={{
-              marginTop: 22,
+              marginTop: 24,
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
               padding: "0 10px",
             }}
           >
-            <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
               <BadgeSeal
-                size={120}
-                bg={COLORS.vermilion}
-                color={COLORS.white}
+                size={110}
+                bg="rgba(255, 255, 255, 0.04)"
+                color={COLORS.titanium}
                 centerText="60"
                 subText="FPS"
-                delay={25}
-                rotationSpeed={1.5}
+                delay={20}
+                rotationSpeed={0.3}
               />
-              <div style={{ fontFamily: FONTS.mono, fontSize: 13, color: "rgba(255,255,255,0.7)" }}>
-                <div style={{ color: COLORS.white, fontWeight: 800 }}>AUTONOMOUS EASING</div>
-                <div>Sub-pixel vector interpolation</div>
+              <div style={{ fontFamily: FONTS.mono, fontSize: 13, color: "rgba(255, 255, 255, 0.6)" }}>
+                <div style={{ color: COLORS.titanium, fontWeight: 700 }}>CONTINUOUS EASING INTERPOLATION</div>
+                <div style={{ opacity: 0.6 }}>Sub-pixel vector calculation across every frame</div>
               </div>
             </div>
           </div>

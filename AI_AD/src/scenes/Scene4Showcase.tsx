@@ -5,73 +5,54 @@ import { ExpressiveText } from "../components/ExpressiveText";
 import { Marquee } from "../components/Marquee";
 import { StudioHeader } from "../components/StudioHeader";
 import { CameraRig } from "../components/CameraRig";
-import { ImpactBurst } from "../components/ImpactBurst";
 import { LiquidGeometry } from "../components/LiquidGeometry";
+import { FLUID_EASE } from "../utils/motion";
 
 export const Scene4Showcase: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  // 3 Micro-beats within the Showcase Reel
-  // Beat A: Kinetic Typography (0 - 68 frames)
-  // Beat B: Brand Identity Choreography (68 - 138 frames)
-  // Beat C: UI / Product Motion Graphics (138 - 210 frames)
+  // 3 Harmonious Showcase Disciplines
   const isBeatA = frame < 68;
   const isBeatB = frame >= 68 && frame < 138;
   const isBeatC = frame >= 138;
 
   // Scene Entrance
-  const enterSpring = spring({ frame, fps, config: SPRINGS.smooth });
-  const enterScale = interpolate(enterSpring, [0, 1], [0.92, 1]);
+  const enterSpring = spring({ frame, fps, config: SPRINGS.silky });
+  const enterScale = interpolate(enterSpring, [0, 1], [0.98, 1]);
 
-  // Outro transition whip (frames 192 - 210)
-  const exitSpring = spring({ frame: frame - 192, fps, config: SPRINGS.punchy });
-  const exitY = interpolate(exitSpring, [0, 1], [0, -100]);
-  const exitScale = interpolate(exitSpring, [0, 1], [1, 1.15]);
+  // Outro transition (frames 192 - 210)
+  const exitProgress = interpolate(frame, [192, 210], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+    easing: FLUID_EASE,
+  });
+  const exitOpacity = interpolate(exitProgress, [0, 0.8, 1], [1, 0.9, 0]);
 
   return (
     <AbsoluteFill
       style={{
-        transform: `translate3d(0, ${exitY}%, 0) scale(${enterScale * exitScale})`,
+        transform: `scale(${enterScale})`,
+        opacity: exitOpacity,
         overflow: "hidden",
         fontFamily: FONTS.display,
       }}
     >
-      <CameraRig
-        impactFrames={[4, 68, 138, 175]}
-        zoomStart={1}
-        zoomEnd={1.08}
-        panXStart={0}
-        panXEnd={-20}
-      >
-        {/* BEAT A: KINETIC TYPOGRAPHY */}
+      <CameraRig zoomStart={1} zoomEnd={1.03} panXStart={0} panXEnd={-12}>
+        {/* BEAT A: KINETIC EDITORIAL TYPOGRAPHY */}
         {isBeatA && (
           <AbsoluteFill
             style={{
-              backgroundColor: "#7B5EE3", // Editorial rich iris/violet
-              color: COLORS.white,
+              backgroundColor: "#0F172A", // Deep refined slate navy
+              color: COLORS.titanium,
             }}
           >
-            <StudioHeader dark={false} tagline="CAPABILITY 01 // KINETIC TYPOGRAPHY" />
+            <StudioHeader dark={false} tagline="CAPABILITY 01 // EDITORIAL TYPOGRAPHY" />
 
-            {/* Background 3D Perspective Grid */}
-            <div
-              style={{
-                position: "absolute",
-                inset: -60,
-                opacity: 0.16,
-                backgroundImage: `linear-gradient(${COLORS.white} 1.5px, transparent 1.5px), linear-gradient(90deg, ${COLORS.white} 1.5px, transparent 1.5px)`,
-                backgroundSize: "68px 68px",
-              }}
-            />
-
-            {/* Ambient Liquid Geometry Blob */}
-            <div style={{ position: "absolute", top: -80, left: 100, opacity: 0.3 }}>
-              <LiquidGeometry size={500} color={COLORS.acidYellow} delay={0} />
+            {/* Ambient Soft Studio Light */}
+            <div style={{ position: "absolute", top: "20%", left: "30%", opacity: 0.45 }}>
+              <LiquidGeometry size={650} color={COLORS.cobalt} delay={0} />
             </div>
-
-            <ImpactBurst hitFrame={4} x={960} y={440} color={COLORS.acidYellow} rayCount={12} />
-            <ImpactBurst hitFrame={20} x={960} y={580} color={COLORS.white} rayCount={14} />
 
             <div
               style={{
@@ -81,89 +62,70 @@ export const Scene4Showcase: React.FC = () => {
                 transform: "translate(-50%, -50%)",
                 textAlign: "center",
                 width: "100%",
-                perspective: 1200,
                 zIndex: 10,
               }}
             >
-              <div
-                style={{
-                  transform: `rotateX(${Math.sin(frame * 0.08) * 12}deg) rotateY(${Math.cos(frame * 0.08) * 10}deg)`,
-                  transformStyle: "preserve-3d",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                }}
-              >
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                 <div style={{ marginBottom: 14 }}>
                   <ExpressiveText
                     text="EXPRESSIVE"
-                    startDelay={2}
-                    charStagger={1.2}
-                    fontSize={145}
+                    startDelay={4}
+                    wordStagger={3}
+                    fontSize={140}
                     fontWeight={900}
                     letterSpacing="-0.05em"
-                    color={COLORS.acidYellow}
-                    direction="3d-flip"
+                    color={COLORS.titanium}
                     style={{ justifyContent: "center" }}
                   />
                 </div>
-                <div style={{ marginBottom: 18 }}>
+                <div style={{ marginBottom: 20 }}>
                   <ExpressiveText
                     text="TYPOGRAPHY"
-                    startDelay={10}
-                    charStagger={1.4}
-                    fontSize={160}
+                    startDelay={12}
+                    wordStagger={3}
+                    fontSize={155}
                     fontWeight={900}
                     letterSpacing="-0.06em"
-                    color={COLORS.white}
-                    direction="3d-flip"
+                    color={COLORS.cobalt}
                     style={{ justifyContent: "center" }}
                   />
                 </div>
                 <div>
                   <ExpressiveText
-                    text="IN HIGH GEAR."
-                    startDelay={18}
-                    charStagger={1.2}
-                    fontSize={88}
-                    fontWeight={900}
+                    text="IN CONTINUOUS HARMONY."
+                    startDelay={20}
+                    wordStagger={3}
+                    fontSize={82}
+                    fontWeight={800}
                     letterSpacing="-0.04em"
-                    color={COLORS.ink}
-                    highlightWords={[{ word: "IN", color: COLORS.ink, bg: COLORS.white }, { word: "HIGH", color: COLORS.ink, bg: COLORS.white }, { word: "GEAR.", color: COLORS.ink, bg: COLORS.white }]}
-                    direction="scale"
+                    color={COLORS.mutedTextDark}
                     style={{ justifyContent: "center" }}
                   />
                 </div>
               </div>
             </div>
 
-            <div style={{ position: "absolute", bottom: 44, left: -40, right: -40 }}>
+            <div style={{ position: "absolute", bottom: 40, left: 0, right: 0 }}>
               <Marquee
-                items={["TITLES", "STINGERS", "TRAILERS", "CAMPAIGNS", "HERO HEADLINES"]}
-                bg={COLORS.ink}
-                color={COLORS.white}
-                speed={6.5}
-                fontSize={24}
-                rotate={1.5}
+                items={["EDITORIAL HEADLINES", "STINGERS", "CAMPAIGN IDENTITIES", "TITLE SEQUENCES"]}
+                speed={2.2}
+                fontSize={18}
               />
             </div>
           </AbsoluteFill>
         )}
 
-        {/* BEAT B: BRAND IDENTITY CHOREOGRAPHY */}
+        {/* BEAT B: LIVING BRAND IDENTITIES */}
         {isBeatB && (
           <AbsoluteFill
             style={{
-              backgroundColor: COLORS.vermilion,
-              color: COLORS.white,
+              backgroundColor: "#18181B", // Dark zinc luxury
+              color: COLORS.titanium,
             }}
           >
-            <StudioHeader dark={false} tagline="CAPABILITY 02 // BRAND CHOREOGRAPHY" />
+            <StudioHeader dark={false} tagline="CAPABILITY 02 // LIVING BRAND SYSTEMS" />
 
-            {/* Impact Burst at beat entry */}
-            <ImpactBurst hitFrame={69} x={1400} y={540} color={COLORS.acidYellow} rayCount={16} maxRadius={280} />
-
-            {/* Morphing Bauhaus Geometric Core */}
+            {/* Morphing Concentric Bauhaus Rings (Smooth and stately) */}
             <div
               style={{
                 position: "absolute",
@@ -175,41 +137,43 @@ export const Scene4Showcase: React.FC = () => {
                 justifyContent: "center",
               }}
             >
-              <svg width="480" height="480" viewBox="0 0 480 480">
-                {/* Concentric rotating arcs */}
+              <svg width="440" height="440" viewBox="0 0 440 440">
                 <circle
-                  cx="240"
-                  cy="240"
-                  r="190"
+                  cx="220"
+                  cy="220"
+                  r="180"
                   fill="none"
-                  stroke={COLORS.white}
-                  strokeWidth="6"
-                  strokeDasharray="45 25"
-                  transform={`rotate(${frame * 2.2} 240 240)`}
+                  stroke="rgba(255, 255, 255, 0.2)"
+                  strokeWidth="2"
+                  strokeDasharray="40 25"
+                  transform={`rotate(${frame * 0.4} 220 220)`}
                 />
                 <circle
-                  cx="240"
-                  cy="240"
-                  r="140"
+                  cx="220"
+                  cy="220"
+                  r="130"
                   fill="none"
-                  stroke={COLORS.acidYellow}
-                  strokeWidth="14"
-                  strokeDasharray="85 35"
-                  transform={`rotate(${-frame * 3.2} 240 240)`}
+                  stroke={COLORS.amber}
+                  strokeWidth="3"
+                  strokeDasharray="80 30"
+                  transform={`rotate(${-frame * 0.6} 220 220)`}
                 />
                 <rect
-                  x="165"
-                  y="165"
-                  width="150"
-                  height="150"
-                  fill={COLORS.ink}
-                  rx="32"
-                  transform={`rotate(${frame * 4} 240 240)`}
+                  x="155"
+                  y="155"
+                  width="130"
+                  height="130"
+                  fill="rgba(255, 255, 255, 0.04)"
+                  stroke="rgba(255, 255, 255, 0.15)"
+                  strokeWidth="1.5"
+                  rx="28"
+                  transform={`rotate(${frame * 0.8} 220 220)`}
                 />
-                <polygon
-                  points="240,185 285,260 195,260"
-                  fill={COLORS.acidYellow}
-                  transform={`rotate(${-frame * 2.4} 240 240)`}
+                <circle
+                  cx="220"
+                  cy="220"
+                  r="30"
+                  fill={COLORS.cobalt}
                 />
               </svg>
             </div>
@@ -227,9 +191,9 @@ export const Scene4Showcase: React.FC = () => {
               <div
                 style={{
                   fontFamily: FONTS.mono,
-                  fontSize: 14,
-                  fontWeight: 800,
-                  color: COLORS.acidYellow,
+                  fontSize: 13,
+                  fontWeight: 700,
+                  color: COLORS.amber,
                   letterSpacing: "0.2em",
                   marginBottom: 16,
                 }}
@@ -238,70 +202,65 @@ export const Scene4Showcase: React.FC = () => {
               </div>
               <div style={{ marginBottom: 14 }}>
                 <ExpressiveText
-                  text="LOGOS THAT"
-                  startDelay={69}
-                  charStagger={1.3}
-                  color={COLORS.white}
-                  fontSize={100}
+                  text="BRAND IDENTITIES"
+                  startDelay={70}
+                  wordStagger={3}
+                  color={COLORS.titanium}
+                  fontSize={94}
                   fontWeight={900}
                   letterSpacing="-0.05em"
-                  direction="3d-flip"
                 />
               </div>
               <div style={{ marginBottom: 22 }}>
                 <ExpressiveText
-                  text="NEVER SIT STILL."
-                  startDelay={77}
-                  charStagger={1.3}
-                  color={COLORS.acidYellow}
-                  fontSize={110}
+                  text="THAT NEVER SLEEP."
+                  startDelay={78}
+                  wordStagger={3}
+                  color={COLORS.amber}
+                  fontSize={104}
                   fontWeight={900}
                   letterSpacing="-0.05em"
-                  highlightWords={[{ word: "NEVER", color: COLORS.acidYellow }]}
-                  direction="3d-flip"
                 />
               </div>
               <p
                 style={{
                   fontSize: 24,
-                  lineHeight: 1.45,
-                  color: "rgba(255,255,255,0.85)",
+                  lineHeight: 1.5,
+                  color: "rgba(248, 249, 250, 0.65)",
                   maxWidth: 640,
                   margin: 0,
                 }}
               >
-                Transform static guidelines into living, breathing brand anthems across all digital surfaces.
+                Transform static brand guidelines into living, breathing design anthems across every digital touchpoint.
               </p>
             </div>
           </AbsoluteFill>
         )}
 
-        {/* BEAT C: PRODUCT & UI MOTION */}
+        {/* BEAT C: PRODUCT & INTERFACE MOTION */}
         {isBeatC && (
           <AbsoluteFill
             style={{
-              backgroundColor: COLORS.ink,
-              color: COLORS.white,
+              backgroundColor: COLORS.obsidian,
+              color: COLORS.titanium,
             }}
           >
-            <StudioHeader dark={false} tagline="CAPABILITY 03 // UI & PRODUCT MOTION" />
+            <StudioHeader dark={false} tagline="CAPABILITY 03 // INTERFACE & PRODUCT MOTION" />
 
-            <ImpactBurst hitFrame={139} x={1450} y={540} color={COLORS.emerald} rayCount={14} />
-
-            {/* Interactive UI Mockup Card */}
+            {/* Interactive Frosted Glass UI Card */}
             <div
               style={{
                 position: "absolute",
                 right: 120,
                 top: "50%",
                 transform: "translateY(-50%)",
-                width: 600,
-                backgroundColor: "rgba(255,255,255,0.07)",
-                borderRadius: 26,
-                border: "1.5px solid rgba(255,255,255,0.18)",
-                padding: "38px",
+                width: 580,
+                backgroundColor: "rgba(255, 255, 255, 0.04)",
+                borderRadius: 24,
+                border: "1px solid rgba(255, 255, 255, 0.1)",
+                padding: "36px",
                 backdropFilter: "blur(24px)",
-                boxShadow: "0 30px 70px rgba(0,0,0,0.55)",
+                boxShadow: "0 28px 60px rgba(0, 0, 0, 0.4)",
               }}
             >
               <div
@@ -309,41 +268,40 @@ export const Scene4Showcase: React.FC = () => {
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  marginBottom: 30,
+                  marginBottom: 28,
                 }}
               >
-                <div style={{ display: "flex", gap: 9 }}>
-                  <div style={{ width: 11, height: 11, borderRadius: "50%", backgroundColor: COLORS.vermilion }} />
-                  <div style={{ width: 11, height: 11, borderRadius: "50%", backgroundColor: COLORS.acidYellow }} />
-                  <div style={{ width: 11, height: 11, borderRadius: "50%", backgroundColor: COLORS.emerald }} />
+                <div style={{ display: "flex", gap: 8 }}>
+                  <div style={{ width: 10, height: 10, borderRadius: "50%", backgroundColor: "rgba(255, 255, 255, 0.2)" }} />
+                  <div style={{ width: 10, height: 10, borderRadius: "50%", backgroundColor: "rgba(255, 255, 255, 0.2)" }} />
+                  <div style={{ width: 10, height: 10, borderRadius: "50%", backgroundColor: COLORS.cobalt }} />
                 </div>
-                <span style={{ fontFamily: FONTS.mono, fontSize: 12, color: COLORS.gray, fontWeight: 700 }}>
-                  LIVE PREVIEW // 60FPS LOSSLESS
+                <span style={{ fontFamily: FONTS.mono, fontSize: 11, color: "rgba(255, 255, 255, 0.5)", fontWeight: 600 }}>
+                  REAL-TIME PREVIEW // LOSSLESS
                 </span>
               </div>
 
-              {/* Animated Interactive Bar Chart */}
-              <div style={{ marginBottom: 32 }}>
-                <div style={{ fontSize: 13, fontFamily: FONTS.mono, color: COLORS.gray, marginBottom: 14 }}>
-                  ENGAGEMENT SURGE (+480%)
+              {/* Smooth Animated Bar Chart */}
+              <div style={{ marginBottom: 30 }}>
+                <div style={{ fontSize: 12, fontFamily: FONTS.mono, color: "rgba(255, 255, 255, 0.5)", marginBottom: 14 }}>
+                  ENGAGEMENT TRAJECTORY (+480%)
                 </div>
-                <div style={{ display: "flex", alignItems: "flex-end", gap: 14, height: 130 }}>
+                <div style={{ display: "flex", alignItems: "flex-end", gap: 14, height: 120 }}>
                   {[40, 65, 30, 85, 55, 95, 75, 100].map((val, idx) => {
-                    const barSpring = spring({
-                      frame: frame - 142 - idx * 2,
-                      fps,
-                      config: SPRINGS.bouncy,
+                    const barProgress = interpolate(frame, [140 + idx * 2, 160 + idx * 2], [0, 1], {
+                      extrapolateLeft: "clamp",
+                      extrapolateRight: "clamp",
+                      easing: FLUID_EASE,
                     });
-                    const pulse = 1 + Math.sin(frame * 0.1 + idx) * 0.05;
                     return (
                       <div
                         key={idx}
                         style={{
                           flex: 1,
-                          height: `${val * barSpring * pulse}%`,
-                          backgroundColor: idx === 7 ? COLORS.acidYellow : COLORS.cobaltLight,
-                          borderRadius: "6px 6px 0 0",
-                          boxShadow: idx === 7 ? `0 0 20px ${COLORS.acidYellow}` : undefined,
+                          height: `${val * barProgress}%`,
+                          backgroundColor: idx === 7 ? COLORS.cobalt : "rgba(255, 255, 255, 0.12)",
+                          borderRadius: "4px 4px 0 0",
+                          boxShadow: idx === 7 ? `0 0 20px ${COLORS.cobalt}` : undefined,
                         }}
                       />
                     );
@@ -351,34 +309,34 @@ export const Scene4Showcase: React.FC = () => {
                 </div>
               </div>
 
-              {/* Interactive Toggle Pill */}
+              {/* Minimalist Switch Toggle */}
               <div
                 style={{
-                  backgroundColor: "rgba(255,255,255,0.06)",
-                  borderRadius: 16,
-                  padding: "18px 22px",
+                  backgroundColor: "rgba(255, 255, 255, 0.03)",
+                  borderRadius: 14,
+                  padding: "16px 20px",
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
+                  border: "1px solid rgba(255, 255, 255, 0.06)",
                 }}
               >
                 <div>
-                  <div style={{ fontWeight: 800, fontSize: 17 }}>Micro-interactions</div>
-                  <div style={{ fontSize: 13, color: COLORS.gray }}>Elastic spring physics applied</div>
+                  <div style={{ fontWeight: 700, fontSize: 16 }}>Micro-interactions</div>
+                  <div style={{ fontSize: 13, color: "rgba(255, 255, 255, 0.45)" }}>Harmonic fluid physics</div>
                 </div>
                 <div
                   style={{
-                    width: 54,
-                    height: 30,
+                    width: 50,
+                    height: 28,
                     borderRadius: 99,
-                    backgroundColor: COLORS.emerald,
+                    backgroundColor: COLORS.cobalt,
                     padding: 3,
                     display: "flex",
                     justifyContent: "flex-end",
-                    boxShadow: `0 0 16px ${COLORS.emerald}`,
                   }}
                 >
-                  <div style={{ width: 24, height: 24, borderRadius: "50%", backgroundColor: COLORS.white }} />
+                  <div style={{ width: 22, height: 22, borderRadius: "50%", backgroundColor: COLORS.titanium }} />
                 </div>
               </div>
             </div>
@@ -396,9 +354,9 @@ export const Scene4Showcase: React.FC = () => {
               <div
                 style={{
                   fontFamily: FONTS.mono,
-                  fontSize: 14,
-                  fontWeight: 800,
-                  color: COLORS.emerald,
+                  fontSize: 13,
+                  fontWeight: 700,
+                  color: COLORS.cobalt,
                   letterSpacing: "0.2em",
                   marginBottom: 16,
                 }}
@@ -409,36 +367,34 @@ export const Scene4Showcase: React.FC = () => {
                 <ExpressiveText
                   text="PRODUCT MOTION"
                   startDelay={140}
-                  charStagger={1.2}
-                  color={COLORS.white}
+                  wordStagger={3}
+                  color={COLORS.titanium}
                   fontSize={95}
                   fontWeight={900}
                   letterSpacing="-0.05em"
-                  direction="3d-flip"
                 />
               </div>
               <div style={{ marginBottom: 22 }}>
                 <ExpressiveText
-                  text="THAT SELLS."
+                  text="THAT CONVERTS."
                   startDelay={148}
-                  charStagger={1.4}
-                  color={COLORS.emerald}
+                  wordStagger={3}
+                  color={COLORS.cobalt}
                   fontSize={100}
                   fontWeight={900}
                   letterSpacing="-0.05em"
-                  direction="3d-flip"
                 />
               </div>
               <p
                 style={{
                   fontSize: 24,
-                  lineHeight: 1.45,
-                  color: "rgba(255,255,255,0.8)",
+                  lineHeight: 1.5,
+                  color: "rgba(255, 255, 255, 0.65)",
                   maxWidth: 620,
                   margin: 0,
                 }}
               >
-                Transform SaaS features and mobile flows into seductive, tactile video assets for product launches.
+                Transform product features and mobile flows into seductive, tactile video assets for launches and campaigns.
               </p>
             </div>
           </AbsoluteFill>

@@ -8,8 +8,8 @@ Collection of programmatic motion graphics videos and commercials crafted with [
 
 A high-end, 30-second kinetic typography commercial: **"Hire Your Next Lead Motion Designer: AI"**.
 
-- **Aesthetic:** Swiss Modernist & Editorial Graphic Design (Pentagram / Studio Dumbar / Buck style).
-- **Techniques:** Character-level 3D kinetic typography, anticipation springs, squash & stretch, impact shockwaves, live cubic-bezier velocity editor, and organic SVG morphing.
+- **Aesthetic:** High-End Editorial & Luxury Architectural (Apple Keynote / Stripe / Pentagram style). Smooth, fluid, confident motion with zero chaos or cyberpunk tropes.
+- **Techniques:** Fluid masked typography reveals (`cubic-bezier(0.16, 1, 0.3, 1)`), critically damped springs, ambient studio lighting, live cubic-bezier velocity editor, and smooth floating cards.
 - **Duration:** 30 seconds (`900 frames @ 30 FPS`, 1080p Full HD).
 
 ### ⚡ 1-Click Quickstart

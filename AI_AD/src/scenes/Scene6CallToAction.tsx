@@ -5,119 +5,104 @@ import { ExpressiveText } from "../components/ExpressiveText";
 import { BadgeSeal } from "../components/BadgeSeal";
 import { StudioHeader } from "../components/StudioHeader";
 import { CameraRig } from "../components/CameraRig";
-import { ImpactBurst } from "../components/ImpactBurst";
 import { LiquidGeometry } from "../components/LiquidGeometry";
+import { FLUID_EASE } from "../utils/motion";
 
 export const Scene6CallToAction: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  // Entrance spring
-  const enterSpring = spring({ frame, fps, config: SPRINGS.smooth });
-  const enterScale = interpolate(enterSpring, [0, 1], [0.94, 1]);
+  // Smooth entrance
+  const enterSpring = spring({ frame, fps, config: SPRINGS.silky });
+  const enterScale = interpolate(enterSpring, [0, 1], [0.98, 1]);
   const enterOpacity = interpolate(enterSpring, [0, 0.4, 1], [0, 1, 1]);
 
-  // Button entrance spring
-  const btnSpring = spring({ frame: frame - 22, fps, config: SPRINGS.bouncy });
-
-  // Cursor gliding into button with bezier-like curve
-  const cursorProgress = interpolate(frame, [22, 54], [0, 1], {
+  // Button entrance
+  const btnProgress = interpolate(frame, [18, 42], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
+    easing: FLUID_EASE,
   });
-  const cursorX = interpolate(cursorProgress, [0, 1], [1480, 1140]);
-  const cursorY = interpolate(cursorProgress, [0, 1], [860, 580]);
 
-  // Click pulse at frame 58
-  const isClicked = frame >= 58;
-  const clickSpring = spring({
-    frame: frame - 58,
-    fps,
-    config: { damping: 7, mass: 0.35, stiffness: 360 },
+  // Natural, fluid cursor glide into the button
+  const cursorProgress = interpolate(frame, [24, 60], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+    easing: FLUID_EASE,
   });
-  const btnPressScale = isClicked ? interpolate(clickSpring, [0, 0.25, 1], [1, 0.92, 1]) : 1;
+  const cursorX = interpolate(cursorProgress, [0, 1], [1400, 1140]);
+  const cursorY = interpolate(cursorProgress, [0, 1], [820, 580]);
 
-  // Final lockup settle
+  // Soft button activation at frame 62 (gentle ambient luminescence, zero harsh flash)
+  const isHovered = frame >= 60;
+  const hoverGlow = isHovered
+    ? interpolate(frame, [60, 75], [0, 1], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+        easing: FLUID_EASE,
+      })
+    : 0;
+
+  // Final lockup gentle settle
   const settleSpring = spring({
-    frame: frame - 95,
+    frame: frame - 90,
     fps,
-    config: SPRINGS.smooth,
+    config: SPRINGS.floating,
   });
 
   return (
     <AbsoluteFill
       style={{
-        backgroundColor: COLORS.ink,
-        color: COLORS.white,
+        backgroundColor: COLORS.obsidian,
+        color: COLORS.titanium,
         fontFamily: FONTS.display,
-        transform: `scale(${enterScale * (1 + settleSpring * 0.04)})`,
+        transform: `scale(${enterScale * (1 + settleSpring * 0.02)})`,
         opacity: enterOpacity,
         overflow: "hidden",
       }}
     >
-      <CameraRig
-        impactFrames={[10, 58]}
-        zoomStart={1}
-        zoomEnd={1.06}
-        panXStart={0}
-        panXEnd={-10}
-      >
+      <CameraRig zoomStart={1} zoomEnd={1.03} panXStart={0} panXEnd={-8}>
         <StudioHeader dark={false} tagline="FINALE / 06 • INITIATE" />
 
-        {/* Ambient Morphing Liquid Blobs */}
-        <div style={{ position: "absolute", top: -100, left: -50, opacity: 0.25 }}>
-          <LiquidGeometry size={600} color={COLORS.vermilion} delay={0} />
+        {/* Ambient Studio Halos */}
+        <div style={{ position: "absolute", top: "25%", left: "20%", opacity: 0.45 }}>
+          <LiquidGeometry size={700} color={COLORS.cobalt} delay={0} />
         </div>
-        <div style={{ position: "absolute", bottom: -120, right: 80, opacity: 0.2 }}>
-          <LiquidGeometry size={500} color={COLORS.cobalt} delay={15} />
+        <div style={{ position: "absolute", bottom: "15%", right: "15%", opacity: 0.3 }}>
+          <LiquidGeometry size={550} color={COLORS.amber} delay={10} />
         </div>
 
-        {/* Atmospheric Radial Spotlight */}
+        {/* Subtle Architectural Grid */}
         <div
           style={{
             position: "absolute",
-            top: "42%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 1300,
-            height: 850,
-            background: "radial-gradient(circle, rgba(255,59,20,0.14) 0%, rgba(22,52,254,0.08) 40%, transparent 70%)",
-            pointerEvents: "none",
+            inset: -40,
+            opacity: 0.05,
+            backgroundImage: `linear-gradient(${COLORS.titanium} 1px, transparent 1px), linear-gradient(90deg, ${COLORS.titanium} 1px, transparent 1px)`,
+            backgroundSize: "72px 72px",
           }}
         />
 
         {/* Rotating Studio Stamp in Top Right */}
         <div style={{ position: "absolute", top: 120, right: 120 }}>
           <BadgeSeal
-            size={170}
-            bg={COLORS.vermilion}
-            color={COLORS.white}
+            size={160}
+            bg="rgba(255, 255, 255, 0.04)"
+            color={COLORS.titanium}
             centerText="HIRE"
             subText="NOW"
             delay={10}
-            rotationSpeed={1.4}
+            rotationSpeed={0.3}
           />
         </div>
 
-        {/* Impact Burst when the cursor clicks */}
-        {isClicked && (
-          <ImpactBurst
-            hitFrame={58}
-            x={1140}
-            y={580}
-            color={COLORS.acidYellow}
-            rayCount={16}
-            maxRadius={300}
-          />
-        )}
-
-        {/* Centered Grand Typography & Magnetic Button */}
+        {/* Centered Grand Typography & Call To Action */}
         <div
           style={{
             position: "absolute",
             left: 0,
             right: 0,
-            top: "46%",
+            top: "47%",
             transform: "translateY(-50%)",
             textAlign: "center",
             display: "flex",
@@ -126,64 +111,74 @@ export const Scene6CallToAction: React.FC = () => {
             zIndex: 10,
           }}
         >
+          {/* Eyebrow Status */}
           <div
             style={{
               display: "inline-flex",
               alignItems: "center",
               gap: 12,
-              backgroundColor: "rgba(255, 255, 255, 0.08)",
-              border: "1.5px solid rgba(255, 255, 255, 0.22)",
-              padding: "10px 24px",
+              backgroundColor: "rgba(255, 255, 255, 0.05)",
+              border: `1px solid ${COLORS.borderDark}`,
+              padding: "8px 22px",
               borderRadius: 999,
               marginBottom: 30,
+              backdropFilter: "blur(16px)",
             }}
           >
-            <span style={{ width: 9, height: 9, borderRadius: "50%", backgroundColor: COLORS.emerald, boxShadow: `0 0 12px ${COLORS.emerald}` }} />
+            <span
+              style={{
+                width: 7,
+                height: 7,
+                borderRadius: "50%",
+                backgroundColor: COLORS.emerald,
+                boxShadow: `0 0 10px ${COLORS.emerald}`,
+              }}
+            />
             <span
               style={{
                 fontFamily: FONTS.mono,
-                fontSize: 13,
-                fontWeight: 800,
-                color: COLORS.white,
-                letterSpacing: "0.2em",
+                fontSize: 12,
+                fontWeight: 600,
+                color: COLORS.titanium,
+                letterSpacing: "0.18em",
               }}
             >
-              AVAILABLE FOR IMMEDIATE COMMISSIONS
+              AVAILABLE FOR PRODUCTION COMMISSIONS
             </span>
           </div>
 
+          {/* Headline */}
           <div style={{ marginBottom: 16 }}>
             <ExpressiveText
-              text="READY TO OUT-MOVE"
+              text="READY TO ELEVATE"
               startDelay={6}
-              charStagger={1.2}
-              color={COLORS.ivory}
-              fontSize={94}
+              wordStagger={3}
+              color={COLORS.titanium}
+              fontSize={90}
               fontWeight={900}
               letterSpacing="-0.05em"
-              direction="3d-flip"
               style={{ justifyContent: "center" }}
             />
           </div>
 
           <div style={{ marginBottom: 38 }}>
             <ExpressiveText
-              text="YOUR COMPETITION?"
-              startDelay={16}
-              charStagger={1.4}
-              color={COLORS.vermilion}
-              fontSize={108}
+              text="YOUR BRAND'S MOTION?"
+              startDelay={14}
+              wordStagger={3}
+              color={COLORS.cobalt}
+              fontSize={100}
               fontWeight={900}
               letterSpacing="-0.06em"
-              direction="3d-flip"
               style={{ justifyContent: "center" }}
             />
           </div>
 
-          {/* Interactive CTA Magnetic Button */}
+          {/* Refined Magnetic Pill CTA Button */}
           <div
             style={{
-              transform: `scale(${btnSpring * btnPressScale})`,
+              transform: `translate3d(0, ${interpolate(btnProgress, [0, 1], [30, 0])}px, 0)`,
+              opacity: btnProgress,
               display: "inline-block",
               position: "relative",
             }}
@@ -192,49 +187,42 @@ export const Scene6CallToAction: React.FC = () => {
               style={{
                 display: "inline-flex",
                 alignItems: "center",
-                gap: 22,
-                backgroundColor: isClicked ? COLORS.acidYellow : COLORS.white,
-                color: COLORS.ink,
-                padding: "24px 56px",
+                gap: 20,
+                backgroundColor: COLORS.titanium,
+                color: COLORS.obsidian,
+                padding: "22px 52px",
                 borderRadius: 999,
-                fontSize: 26,
-                fontWeight: 900,
+                fontSize: 24,
+                fontWeight: 800,
                 letterSpacing: "-0.02em",
-                boxShadow: isClicked
-                  ? `0 0 60px ${COLORS.acidYellow}`
-                  : "0 25px 70px rgba(255,255,255,0.28)",
-                transition: "background-color 0.2s ease, box-shadow 0.2s ease",
+                boxShadow: isHovered
+                  ? `0 20px 60px ${COLORS.cobaltGlow}, 0 0 30px rgba(255, 255, 255, 0.4)`
+                  : "0 18px 50px rgba(0, 0, 0, 0.3)",
+                transition: "box-shadow 0.3s ease",
               }}
             >
-              <span>HIRE YOUR AI MOTION DESIGNER</span>
-              <span style={{ fontSize: 32, transform: "translateY(-2px)" }}>→</span>
-            </div>
-
-            {/* Expanding shockwave ring on click */}
-            {isClicked && (
-              <div
+              <span>COMMISSION AI MOTION</span>
+              <span
                 style={{
-                  position: "absolute",
-                  inset: -24,
-                  borderRadius: 999,
-                  border: `3px solid ${COLORS.acidYellow}`,
-                  opacity: interpolate(clickSpring, [0, 1], [1, 0]),
-                  transform: `scale(${interpolate(clickSpring, [0, 1], [1, 1.45])})`,
-                  pointerEvents: "none",
+                  fontSize: 28,
+                  transform: `translateX(${hoverGlow * 4}px)`,
+                  transition: "transform 0.2s ease",
                 }}
-              />
-            )}
+              >
+                →
+              </span>
+            </div>
           </div>
 
-          {/* Website & Direct Contact info */}
-          <div style={{ marginTop: 50 }}>
+          {/* Website & Direct Information */}
+          <div style={{ marginTop: 46 }}>
             <div
               style={{
                 fontFamily: FONTS.mono,
-                fontSize: 20,
-                fontWeight: 700,
-                letterSpacing: "0.15em",
-                color: "rgba(255,255,255,0.85)",
+                fontSize: 18,
+                fontWeight: 600,
+                letterSpacing: "0.14em",
+                color: "rgba(248, 249, 250, 0.8)",
               }}
             >
               hire-ai-motion.design
@@ -242,18 +230,19 @@ export const Scene6CallToAction: React.FC = () => {
             <div
               style={{
                 fontFamily: FONTS.mono,
-                fontSize: 13,
-                color: COLORS.gray,
+                fontSize: 12,
+                color: COLORS.mutedTextDark,
                 marginTop: 10,
                 letterSpacing: "0.12em",
+                opacity: 0.7,
               }}
             >
-              FULL COMMISSIONS • DESIGN SYSTEMS • HIGH VELOCITY SOCIAL
+              DESIGN SYSTEMS • CAMPAIGN IDENTITIES • HIGH-VELOCITY PRODUCTION
             </div>
           </div>
         </div>
 
-        {/* Animated Mouse Cursor Vector */}
+        {/* Minimalist Vector Mouse Cursor */}
         <div
           style={{
             position: "absolute",
@@ -261,15 +250,14 @@ export const Scene6CallToAction: React.FC = () => {
             top: cursorY,
             pointerEvents: "none",
             zIndex: 99,
-            transform: `scale(${isClicked ? 0.9 : 1})`,
-            filter: "drop-shadow(0 12px 24px rgba(0,0,0,0.6))",
+            filter: "drop-shadow(0 10px 20px rgba(0, 0, 0, 0.45))",
           }}
         >
-          <svg width="36" height="44" viewBox="0 0 34 42" fill="none">
+          <svg width="32" height="40" viewBox="0 0 34 42" fill="none">
             <path
               d="M2 2L13.5 37.5L18.5 24.5L31.5 20.5L2 2Z"
-              fill={COLORS.white}
-              stroke={COLORS.ink}
+              fill={COLORS.titanium}
+              stroke={COLORS.obsidian}
               strokeWidth="2.5"
               strokeLinejoin="round"
             />
