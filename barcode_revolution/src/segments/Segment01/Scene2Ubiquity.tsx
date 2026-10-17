@@ -14,41 +14,41 @@ export const Scene2Ubiquity: React.FC = () => {
   const { fps } = useVideoConfig();
 
   // 150 frames total (0:08 to 0:13)
-  // Phase 1: 0 - 75 frames: 3D Barcode Tunnel & Mechanical 10,000 Ticker
-  // Phase 2: 75 - 150 frames: "You've never really looked" & Microscopic Cellular Ink Zoom
+  // Phase 1: 0 - 80 frames: Precision Optical Dial & 10,000 Counter
+  // Phase 2: 80 - 150 frames: "You've never really looked" & Binary Code Vector Micro-Zoom
 
-  // Counter spin
+  // Counter roll
   const counterSpring = spring({
     frame,
     fps,
-    config: { damping: 15, mass: 1.0, stiffness: 75 },
+    config: { damping: 15, mass: 1.0, stiffness: 80 },
   });
 
   const countVal = Math.floor(interpolate(counterSpring, [0, 1], [0, 10000]));
 
   // Screen shake on 10,000 impact (frame 60 to 75)
   const shake =
-    frame >= 58 && frame <= 75
-      ? Math.sin(frame * 2.5) * interpolate(frame, [58, 65, 75], [0, 8, 0])
+    frame >= 58 && frame <= 74
+      ? Math.sin(frame * 2.8) * interpolate(frame, [58, 64, 74], [0, 10, 0])
       : 0;
 
-  // Violent Macro Zoom transition (starts frame 75)
-  const macroSpring = spring({
+  // Macro Dive (starts frame 75)
+  const diveSpring = spring({
     frame: frame - 75,
     fps,
-    config: { damping: 13, mass: 0.7, stiffness: 110 },
+    config: { damping: 14, mass: 0.7, stiffness: 110 },
   });
 
-  const macroScale = interpolate(macroSpring, [0, 1], [1, 9.5]);
-  const tunnelOpacity = interpolate(macroSpring, [0, 0.4, 1], [1, 0.2, 0]);
-  const macroOpacity = interpolate(macroSpring, [0, 0.2, 1], [0, 0.8, 1]);
+  const diveScale = interpolate(diveSpring, [0, 1], [1, 8.5]);
+  const phase1Opacity = interpolate(diveSpring, [0, 0.4, 1], [1, 0.2, 0]);
+  const phase2Opacity = interpolate(diveSpring, [0, 0.2, 1], [0, 0.8, 1]);
 
   return (
     <div
       style={{
         position: 'absolute',
         inset: 0,
-        backgroundColor: '#06070a',
+        backgroundColor: '#07080c',
         overflow: 'hidden',
       }}
     >
@@ -57,92 +57,61 @@ export const Scene2Ubiquity: React.FC = () => {
         zoom={[1, 1.15]}
         panX={[shake, 0]}
         panY={[shake * 0.5, 0]}
-        driftIntensity={0.8}
+        driftIntensity={0.65}
       >
-        <DustParticles count={40} color="rgba(242, 239, 230, 0.3)" />
+        <DustParticles count={35} color="rgba(242, 239, 230, 0.25)" />
 
         {/* ======================================================== */}
-        {/* PHASE 1: 3D BARCODE TUNNEL & MECHANICAL ODOMETER         */}
+        {/* PHASE 1: KINETIC OPTICAL DIAL & 10,000 COUNTER (0 - 80)  */}
         {/* ======================================================== */}
         <div
           style={{
             position: 'absolute',
             inset: 0,
-            opacity: tunnelOpacity,
-            perspective: 1200,
+            opacity: phase1Opacity,
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
           }}
         >
-          {/* Infinite 3D Barcode Panels Rushing Past */}
-          {[-6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6].map((idx) => {
-            const zOffset = ((idx * 280 + frame * 32) % 3000) - 1500;
-            const xPos = Math.sin(idx * 0.9) * 750;
-            const yPos = Math.cos(idx * 0.7) * 420;
-            const cardOpacity = interpolate(zOffset, [-1200, -200, 800, 1400], [0, 0.4, 0.8, 0]);
+          {/* Rotating Vector Calibration Rings */}
+          <svg
+            width="1000"
+            height="1000"
+            viewBox="0 0 1000 1000"
+            style={{
+              position: 'absolute',
+              transform: `rotate(${frame * 0.4}deg)`,
+            }}
+          >
+            <circle cx="500" cy="500" r="440" stroke="rgba(242, 239, 230, 0.12)" strokeWidth="1" strokeDasharray="4 8" fill="none" />
+            <circle cx="500" cy="500" r="380" stroke="rgba(245, 184, 74, 0.25)" strokeWidth="1.5" strokeDasharray="12 12" fill="none" />
+            <circle cx="500" cy="500" r="300" stroke="rgba(91, 141, 239, 0.2)" strokeWidth="1" fill="none" />
+            
+            {/* 360-degree Radial Ticks */}
+            {Array.from({ length: 72 }).map((_, i) => (
+              <line
+                key={i}
+                x1="500"
+                y1="70"
+                x2="500"
+                y2={i % 6 === 0 ? "95" : "82"}
+                stroke={i % 6 === 0 ? THEME.colors.amber : "rgba(242, 239, 230, 0.25)"}
+                strokeWidth={i % 6 === 0 ? "2" : "1"}
+                transform={`rotate(${i * 5} 500 500)`}
+              />
+            ))}
+          </svg>
 
-            return (
-              <div
-                key={idx}
-                style={{
-                  position: 'absolute',
-                  width: 280,
-                  height: 380,
-                  transform: `translate3d(${xPos}px, ${yPos}px, ${zOffset}px) rotateY(${idx * 15}deg)`,
-                  opacity: cardOpacity,
-                  pointerEvents: 'none',
-                  border: '1px solid rgba(242, 239, 230, 0.12)',
-                  backgroundColor: 'rgba(15, 18, 26, 0.65)',
-                  boxShadow: '0 20px 60px rgba(0,0,0,0.8)',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  padding: 24,
-                  filter: `blur(${Math.max(0, Math.abs(zOffset) * 0.003)}px)`,
-                }}
-              >
-                {/* Barcode graphic on rushing panels */}
-                <div style={{ display: 'flex', gap: 3, height: 160, alignItems: 'center' }}>
-                  {[3, 1, 6, 2, 8, 2, 4, 1, 7, 3, 2, 5, 1, 8, 3, 2, 6, 4, 2].map((w, bi) => (
-                    <div
-                      key={bi}
-                      style={{
-                        width: w,
-                        height: '100%',
-                        backgroundColor: bi % 5 === 0 ? THEME.colors.amber : THEME.colors.boneWhite,
-                        opacity: 0.8,
-                      }}
-                    />
-                  ))}
-                </div>
-                <div
-                  style={{
-                    fontFamily: THEME.fonts.mono,
-                    fontSize: 10,
-                    color: THEME.colors.sand,
-                    marginTop: 16,
-                    letterSpacing: '0.2em',
-                  }}
-                >
-                  UPC-A RECOGNITION
-                </div>
-              </div>
-            );
-          })}
-
-          {/* Central Mechanical Odometer Frame */}
+          {/* Central Monumental Ticker Frame */}
           <div
             style={{
-              position: 'relative',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              zIndex: 30,
+              zIndex: 20,
             }}
           >
-            {/* HUD Upper Stamp */}
             <div
               style={{
                 fontFamily: THEME.fonts.mono,
@@ -156,61 +125,42 @@ export const Scene2Ubiquity: React.FC = () => {
                 gap: 12,
               }}
             >
-              <div style={{ width: 10, height: 10, backgroundColor: THEME.colors.amber, borderRadius: '50%' }} />
+              <div style={{ width: 8, height: 8, backgroundColor: THEME.colors.amber, borderRadius: '50%' }} />
               SUBCONSCIOUS LIFETIME EXPOSURE
             </div>
 
-            {/* Industrial Gunmetal Chassis */}
+            {/* Giant Monospace Digits */}
             <div
               style={{
-                backgroundColor: '#11141c',
-                border: '2px solid rgba(242, 239, 230, 0.25)',
-                borderRadius: 16,
-                padding: '24px 60px',
-                boxShadow:
-                  '0 30px 100px rgba(0,0,0,0.95), inset 0 2px 10px rgba(255,255,255,0.1), inset 0 -4px 15px rgba(0,0,0,0.8)',
-                position: 'relative',
+                fontFamily: THEME.fonts.mono,
+                fontSize: 140,
+                fontWeight: 800,
+                color: THEME.colors.boneWhite,
+                letterSpacing: '-0.02em',
+                lineHeight: 0.9,
+                display: 'flex',
+                alignItems: 'baseline',
+                gap: 24,
+                textShadow: '0 0 60px rgba(242, 239, 230, 0.4)',
               }}
             >
-              {/* Corner Screws */}
-              <div style={{ position: 'absolute', top: 10, left: 12, width: 8, height: 8, borderRadius: '50%', background: '#444' }} />
-              <div style={{ position: 'absolute', top: 10, right: 12, width: 8, height: 8, borderRadius: '50%', background: '#444' }} />
-              <div style={{ position: 'absolute', bottom: 10, left: 12, width: 8, height: 8, borderRadius: '50%', background: '#444' }} />
-              <div style={{ position: 'absolute', bottom: 10, right: 12, width: 8, height: 8, borderRadius: '50%', background: '#444' }} />
-
-              {/* Number Display */}
-              <div
+              <span>{countVal.toLocaleString()}</span>
+              <span
                 style={{
-                  fontFamily: THEME.fonts.mono,
-                  fontSize: 130,
-                  fontWeight: 800,
-                  color: THEME.colors.boneWhite,
-                  letterSpacing: '0.04em',
-                  textShadow: '0 0 50px rgba(242, 239, 230, 0.4)',
-                  display: 'flex',
-                  alignItems: 'baseline',
-                  gap: 20,
-                  lineHeight: 1,
+                  fontSize: 50,
+                  fontFamily: THEME.fonts.story,
+                  fontStyle: 'italic',
+                  fontWeight: 400,
+                  color: THEME.colors.amber,
                 }}
               >
-                <span>{countVal.toLocaleString()}</span>
-                <span
-                  style={{
-                    fontSize: 44,
-                    color: THEME.colors.amber,
-                    fontFamily: THEME.fonts.story,
-                    fontStyle: 'italic',
-                    fontWeight: 400,
-                  }}
-                >
-                  times
-                </span>
-              </div>
+                times
+              </span>
             </div>
 
             <div
               style={{
-                marginTop: 24,
+                marginTop: 28,
                 fontFamily: THEME.fonts.story,
                 fontSize: 32,
                 color: THEME.colors.sandLight,
@@ -218,133 +168,83 @@ export const Scene2Ubiquity: React.FC = () => {
                 opacity: 0.85,
               }}
             >
-              “Every checkout, every pantry, every package.”
+              “Every store shelf, every pantry, every package.”
             </div>
           </div>
         </div>
 
         {/* ======================================================== */}
-        {/* PHASE 2: EXTREME MICROSCOPIC INK BOUNDARY ZOOM           */}
+        {/* PHASE 2: BINARY VECTOR ANATOMY MICRO-ZOOM (80 - 150)     */}
         {/* ======================================================== */}
         {frame >= 70 && (
           <div
             style={{
               position: 'absolute',
               inset: 0,
-              opacity: macroOpacity,
+              opacity: phase2Opacity,
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
-              transform: `scale(${macroScale})`,
+              transform: `scale(${diveScale})`,
               transformOrigin: '50% 50%',
-              zIndex: 50,
+              zIndex: 40,
             }}
           >
-            {/* Microscopic Surface Texture SVG */}
+            {/* Pure Mathematical Barcode Anatomy SVG */}
             <svg width="1920" height="1080" viewBox="0 0 1920 1080" fill="none">
-              <defs>
-                {/* Ragged microscopic ink absorption filter */}
-                <filter id="ragged-ink">
-                  <feTurbulence
-                    type="fractalNoise"
-                    baseFrequency="0.08"
-                    numOctaves="5"
-                    result="noise"
-                  />
-                  <feDisplacementMap
-                    in="SourceGraphic"
-                    in2="noise"
-                    scale="32"
-                    xChannelSelector="R"
-                    yChannelSelector="G"
-                  />
-                </filter>
+              {/* Massive Center Vector Bars */}
+              <rect x="760" y="-200" width="160" height="1480" fill="#ffffff" />
+              <rect x="1000" y="-200" width="160" height="1480" fill="#ffffff" />
+              <rect x="620" y="-200" width="80" height="1480" fill="#ffffff" opacity="0.5" />
+              <rect x="1220" y="-200" width="80" height="1480" fill="#ffffff" opacity="0.5" />
 
-                {/* Cardboard fiber texture */}
-                <filter id="wood-pulp">
-                  <feTurbulence
-                    type="fractalNoise"
-                    baseFrequency="0.35"
-                    numOctaves="3"
-                    result="grain"
-                  />
-                  <feColorMatrix
-                    type="matrix"
-                    values="0.3 0 0 0 0.85
-                            0 0.28 0 0 0.80
-                            0 0 0.24 0 0.70
-                            0 0 0 1 0"
-                  />
-                  <feBlend mode="multiply" in="SourceGraphic" result="blend" />
-                </filter>
-              </defs>
-
-              {/* Fibrous Cardboard Ground */}
-              <rect width="1920" height="1080" fill="#e8dfce" filter="url(#wood-pulp)" />
-
-              {/* Microscopic Ragged Ink Bar */}
-              <rect
-                x="800"
-                y="-100"
-                width="320"
-                height="1280"
-                fill="#000000"
-                filter="url(#ragged-ink)"
-              />
-
-              {/* Laser Micrometer Measurement Line */}
-              <line
-                x1="800"
-                y1="540"
-                x2="1120"
-                y2="540"
-                stroke={THEME.colors.signalRed}
-                strokeWidth="4"
-                strokeDasharray="8 8"
-              />
-              <circle cx="800" cy="540" r="8" fill={THEME.colors.signalRed} />
-              <circle cx="1120" cy="540" r="8" fill={THEME.colors.signalRed} />
+              {/* Binary Code Annotations */}
+              <g transform="translate(960, 540)">
+                {/* Center Caliper Measurement Arrow */}
+                <line x1="-120" y1="0" x2="120" y2="0" stroke={THEME.colors.signalRed} strokeWidth="4" />
+                <polygon points="-120,-8 -120,8 -135,0" fill={THEME.colors.signalRed} />
+                <polygon points="120,-8 120,8 135,0" fill={THEME.colors.signalRed} />
+              </g>
             </svg>
 
-            {/* Scientific Microscope Crosshair Reticle Overlay */}
+            {/* Binary Modulator HUD */}
             <div
               style={{
                 position: 'absolute',
-                width: 700,
-                height: 700,
-                borderRadius: '50%',
-                border: '2px solid rgba(255, 77, 61, 0.4)',
-                boxShadow: '0 0 0 9999px rgba(5, 7, 10, 0.85)',
-                pointerEvents: 'none',
+                top: '52%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                backgroundColor: 'rgba(7, 8, 12, 0.95)',
+                border: `1px solid ${THEME.colors.signalRed}`,
+                padding: '16px 28px',
+                borderRadius: 8,
+                boxShadow: '0 10px 40px rgba(0,0,0,0.9)',
                 display: 'flex',
-                justifyContent: 'center',
+                flexDirection: 'column',
                 alignItems: 'center',
+                gap: 8,
               }}
             >
-              <div style={{ position: 'absolute', width: '100%', height: 1, backgroundColor: 'rgba(255, 77, 61, 0.3)' }} />
-              <div style={{ position: 'absolute', height: '100%', width: 1, backgroundColor: 'rgba(255, 77, 61, 0.3)' }} />
-
-              {/* Telemetry Annotations */}
               <div
                 style={{
-                  position: 'absolute',
-                  top: 40,
-                  left: 40,
                   fontFamily: THEME.fonts.mono,
-                  fontSize: 11,
-                  color: THEME.colors.amber,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 4,
-                  backgroundColor: 'rgba(11, 13, 18, 0.95)',
-                  padding: '8px 14px',
-                  borderRadius: 6,
-                  border: '1px solid rgba(245, 184, 74, 0.3)',
+                  fontSize: 28,
+                  fontWeight: 800,
+                  color: THEME.colors.signalRed,
+                  letterSpacing: '0.2em',
                 }}
               >
-                <span>MAGNIFICATION: 450X</span>
-                <span>BAR WIDTH: 0.330 mm (±0.012 mm)</span>
-                <span>SUBSTRATE: UNBLEACHED KRAFT PAPER</span>
+                1 0 1 0 0 0 1 1
+              </div>
+              <div
+                style={{
+                  fontFamily: THEME.fonts.mono,
+                  fontSize: 12,
+                  color: THEME.colors.sand,
+                  letterSpacing: '0.15em',
+                }}
+              >
+                BINARY ENCODING // 1 MODULE = 0.330 mm
               </div>
             </div>
           </div>
@@ -355,12 +255,12 @@ export const Scene2Ubiquity: React.FC = () => {
           <div
             style={{
               position: 'absolute',
-              bottom: 120,
+              bottom: 110,
               left: 0,
               right: 0,
               textAlign: 'center',
               fontFamily: THEME.fonts.story,
-              fontSize: 54,
+              fontSize: 56,
               fontWeight: 600,
               color: THEME.colors.boneWhite,
               letterSpacing: '-0.02em',
