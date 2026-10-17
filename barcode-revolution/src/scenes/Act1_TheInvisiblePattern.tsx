@@ -7,106 +7,194 @@ import {
   useVideoConfig,
 } from "remotion";
 import { CameraRig } from "../components/CameraRig";
-import { KineticWord } from "../components/KineticWord";
 
 export const Act1_TheInvisiblePattern: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  // Phase 1: Macro lines reveal (Frames 0 -> 220)
+  // Phase 1: Macro lines reveal (Frames 0 -> 240)
   const linesExpansion = spring({
     frame,
     fps,
     config: { damping: 14, stiffness: 80 },
   });
 
-  // Phase 2: 10,000 times counter (Frames 153 -> 260)
+  // Phase 2: 10,000 times counter (Frames 240 -> 450)
   const counterVal = Math.floor(
-    interpolate(frame, [150, 210], [0, 10000], {
+    interpolate(frame, [240, 390], [0, 10000], {
       extrapolateLeft: "clamp",
       extrapolateRight: "clamp",
     })
   );
 
-  // Phase 3: Florida beach flash teaser (Frames 263 -> 397)
-  const beachTease = interpolate(frame, [263, 300, 380, 397], [0, 1, 1, 0], {
+  // Phase 3: Florida beach flash teaser (Frames 450 -> 690)
+  const beachTease = interpolate(frame, [450, 490, 650, 690], [0, 1, 1, 0], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
 
-  // Phase 4: 25 Years Frozen Timeline (Frames 397 -> 487)
-  const twentyFiveYears = frame >= 397 && frame < 487;
+  // Phase 4: 25 Years Frozen Timeline (Frames 690 -> 870)
+  const frozenProgress = interpolate(frame, [690, 750], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
 
-  // Phase 5: $15,000 Patent Tag (Frames 487 -> 594)
-  const fifteenGrand = frame >= 487 && frame < 670;
+  // Phase 5: $15,000 Patent Tag (Frames 870 -> 1080)
+  const fifteenGrandSpring = spring({
+    frame: frame - 870,
+    fps,
+    config: { damping: 12, stiffness: 100 },
+  });
 
-  // Phase 6: Circle vs Straight Line hook (Frames 803 -> 1102)
-  const circleVsBars = frame >= 803;
+  // Laser scanning blade animation
+  const laserY = interpolate(frame % 90, [0, 90], [280, 800]);
 
   return (
-    <CameraRig durationInFrames={1102} zoom={[1, 1.1]} panX={[0, -20]}>
+    <CameraRig durationInFrames={1080} zoom={[1, 1.08]} panX={[0, -25]}>
       <AbsoluteFill
         style={{
-          backgroundColor: "#08090D",
+          backgroundColor: "#07080B",
           justifyContent: "center",
           alignItems: "center",
           fontFamily: "'Space Grotesk', sans-serif",
           overflow: "hidden",
         }}
       >
-        {/* Ambient Dark Geometry */}
+        {/* Ambient Dark Blueprint Grid */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            backgroundImage:
+              "linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px)",
+            backgroundSize: "70px 70px",
+          }}
+        />
+
+        {/* Cinematic Vignette */}
         <div
           style={{
             position: "absolute",
             inset: 0,
             background:
-              "radial-gradient(ellipse at 50% 50%, #151A26 0%, #06070A 80%)",
+              "radial-gradient(circle at 50% 50%, transparent 20%, rgba(7, 8, 11, 0.9) 85%)",
           }}
         />
 
-        {/* SECTION A: The Macro Barcode Lines Materializing */}
-        {frame < 263 && (
+        {/* Global Laser Scanning Line */}
+        <div
+          style={{
+            position: "absolute",
+            top: laserY,
+            left: 0,
+            right: 0,
+            height: 2,
+            backgroundColor: "#FF3B30",
+            boxShadow: "0 0 16px #FF3B30, 0 0 35px rgba(255, 59, 48, 0.7)",
+            opacity: frame < 870 ? 0.85 : 0.2,
+            zIndex: 10,
+          }}
+        />
+
+        {/* TOP HUD METADATA */}
+        <div
+          style={{
+            position: "absolute",
+            top: 50,
+            left: 80,
+            right: 80,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+            zIndex: 20,
+          }}
+        >
+          <div>
+            <div
+              style={{
+                fontFamily: "'Space Mono', monospace",
+                fontSize: 12,
+                letterSpacing: 3,
+                textTransform: "uppercase",
+                color: "#FF3B30",
+                background: "rgba(255, 59, 48, 0.1)",
+                border: "1px solid rgba(255, 59, 48, 0.35)",
+                padding: "6px 14px",
+                borderRadius: 4,
+                display: "inline-block",
+                marginBottom: 10,
+              }}
+            >
+              ACT 01 // THE INVISIBLE ARCHITECTURE
+            </div>
+            <div
+              style={{
+                fontFamily: "'Anton', sans-serif",
+                fontSize: 54,
+                lineHeight: 1,
+                color: "#FFF",
+                letterSpacing: 1,
+              }}
+            >
+              THE PATTERN WITHIN ARM'S REACH
+            </div>
+          </div>
+
+          <div
+            style={{
+              fontFamily: "'Space Mono', monospace",
+              fontSize: 12,
+              color: "#6B7280",
+              textAlign: "right",
+              lineHeight: 1.6,
+            }}
+          >
+            SYS: OPTICAL SYMBOLOGY<br />
+            TARGET: UNIVERSAL PRODUCT CODE<br />
+            FREQUENCY: 30 FPS // 1080P
+          </div>
+        </div>
+
+        {/* SECTION 1: MACRO BARCODE REVEAL (Frames 0 -> 240) */}
+        {frame < 250 && (
           <div
             style={{
               display: "flex",
               alignItems: "center",
               gap: 8,
               transform: `scale(${linesExpansion})`,
+              background: "#FFFFFF",
+              padding: "36px 48px",
+              borderRadius: 8,
+              boxShadow: "0 30px 80px rgba(0,0,0,0.8), 0 0 40px rgba(255,255,255,0.1)",
             }}
           >
             {[
               4, 8, 16, 4, 24, 8, 4, 32, 12, 4, 16, 8, 28, 4, 12, 6, 20, 8,
-              36, 4,
+              36, 4, 18, 6, 12, 28, 8, 4, 16, 4,
             ].map((w, idx) => (
               <div
                 key={idx}
                 style={{
-                  width: w * 2.5,
-                  height: 520,
-                  backgroundColor: "#FFFFFF",
-                  boxShadow: "0 0 25px rgba(255,255,255,0.15)",
+                  width: w * 2.2,
+                  height: 420,
+                  backgroundColor: "#000000",
                 }}
               />
             ))}
           </div>
         )}
 
-        {/* 10,000 TIMES Counter Hit */}
-        {frame >= 153 && frame < 263 && (
-          <div
-            style={{
-              position: "absolute",
-              bottom: 120,
-              textAlign: "center",
-            }}
-          >
+        {/* SECTION 2: 10,000 TIMES ACCELERATOR (Frames 240 -> 450) */}
+        {frame >= 240 && frame < 450 && (
+          <div style={{ textAlign: "center", zIndex: 15 }}>
             <div
               style={{
-                fontFamily: "'Impact', sans-serif",
-                fontSize: 130,
-                color: "#E2B17A",
+                fontFamily: "'Anton', sans-serif",
+                fontSize: 160,
+                color: "#FFFFFF",
+                letterSpacing: 4,
                 lineHeight: 1,
-                letterSpacing: 2,
                 textShadow: "0 10px 40px rgba(0,0,0,0.9)",
               }}
             >
@@ -114,106 +202,127 @@ export const Act1_TheInvisiblePattern: React.FC = () => {
             </div>
             <div
               style={{
-                fontFamily: "'Courier New', monospace",
-                fontSize: 16,
-                letterSpacing: 4,
-                color: "#8D99AE",
-                marginTop: 8,
-              }}
-            >
-              TIMES SEEN // NEVER EXAMINED
-            </div>
-          </div>
-        )}
-
-        {/* SECTION B: 1949 Florida Beach Sand Silhouette Flash */}
-        {beachTease > 0 && (
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              backgroundColor: "rgba(226, 177, 122, 0.12)",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              opacity: beachTease,
-            }}
-          >
-            <div
-              style={{
-                fontFamily: "'Impact', sans-serif",
-                fontSize: 160,
-                color: "#FFFFFF",
-                letterSpacing: 4,
-              }}
-            >
-              1949
-            </div>
-            <div
-              style={{
-                fontFamily: "'Courier New', monospace",
-                fontSize: 20,
+                fontFamily: "'Space Grotesk', sans-serif",
+                fontSize: 34,
+                fontWeight: 700,
                 color: "#E2B17A",
+                textTransform: "uppercase",
                 letterSpacing: 6,
+                marginTop: 15,
               }}
             >
-              MIAMI BEACH, FLORIDA // INVENTED IN THE SAND
+              TIMES YOU'VE SEEN THEM. NEVER REALLY LOOKED.
             </div>
           </div>
         )}
 
-        {/* SECTION C: 25 Years of Silence */}
-        {twentyFiveYears && (
-          <div style={{ textAlign: "center", zIndex: 10 }}>
-            <KineticWord
-              text="25 YEARS"
-              triggerFrame={397}
-              fontSize={150}
-              color="#FF3344"
-            />
-            <div
-              style={{
-                fontFamily: "'Courier New', monospace",
-                fontSize: 18,
-                letterSpacing: 6,
-                color: "#8892B0",
-                marginTop: 10,
-              }}
-            >
-              ABSOLUTELY NOTHING HAPPENED.
-            </div>
-          </div>
-        )}
-
-        {/* SECTION D: $15,000 Patent Transfer Tag */}
-        {fifteenGrand && (
+        {/* SECTION 3: FLORIDA BEACH 1949 FLASH (Frames 450 -> 690) */}
+        {frame >= 450 && frame < 690 && (
           <div
             style={{
-              position: "absolute",
-              transform: "rotate(-6deg)",
-              background: "#EAE5D9",
-              padding: "24px 48px",
-              boxShadow: "0 30px 80px rgba(0,0,0,0.9)",
-              border: "2px solid #C8C0B0",
+              opacity: beachTease,
+              textAlign: "center",
+              position: "relative",
               zIndex: 15,
             }}
           >
             <div
               style={{
-                fontFamily: "'Courier New', monospace",
-                fontSize: 14,
-                color: "#555",
-                letterSpacing: 2,
+                fontFamily: "'Special Elite', monospace",
+                fontSize: 18,
+                color: "#E2B17A",
+                letterSpacing: 4,
+                marginBottom: 12,
               }}
             >
-              PATENT ASSIGNMENT RECEIPT // 1952
+              MIAMI BEACH, FLORIDA // 1949
             </div>
             <div
               style={{
-                fontFamily: "'Impact', sans-serif",
-                fontSize: 120,
-                color: "#111",
+                fontFamily: "'Anton', sans-serif",
+                fontSize: 110,
+                color: "#FFFFFF",
+                textTransform: "uppercase",
+                lineHeight: 0.95,
+              }}
+            >
+              FIRST SKETCHED<br />
+              <span style={{ color: "#E2B17A" }}>IN THE SAND</span>
+            </div>
+          </div>
+        )}
+
+        {/* SECTION 4: 25 YEARS OF SILENCE (Frames 690 -> 870) */}
+        {frame >= 690 && frame < 870 && (
+          <div
+            style={{
+              textAlign: "center",
+              transform: `scale(${interpolate(frozenProgress, [0, 1], [0.92, 1])})`,
+              opacity: frozenProgress,
+              zIndex: 15,
+            }}
+          >
+            <div
+              style={{
+                fontFamily: "'Space Mono', monospace",
+                fontSize: 18,
+                color: "#00E5FF",
+                letterSpacing: 4,
+                marginBottom: 10,
+              }}
+            >
+              THE INERTIA GAP
+            </div>
+            <div
+              style={{
+                fontFamily: "'Anton', sans-serif",
+                fontSize: 150,
+                color: "#FFFFFF",
+                lineHeight: 0.95,
+              }}
+            >
+              25 YEARS
+            </div>
+            <div
+              style={{
+                fontFamily: "'Space Grotesk', sans-serif",
+                fontSize: 30,
+                fontWeight: 700,
+                color: "#8C99AF",
+                letterSpacing: 5,
+                marginTop: 15,
+              }}
+            >
+              AND THEN IT DID ABSOLUTELY NOTHING.
+            </div>
+          </div>
+        )}
+
+        {/* SECTION 5: $15,000 RIGHTS SOLD (Frames 870 -> 1080) */}
+        {frame >= 870 && (
+          <div
+            style={{
+              textAlign: "center",
+              transform: `scale(${Math.max(0, fifteenGrandSpring)})`,
+              zIndex: 15,
+            }}
+          >
+            <div
+              style={{
+                fontFamily: "'Space Mono', monospace",
+                fontSize: 14,
+                letterSpacing: 3,
+                color: "#FF453A",
+                marginBottom: 8,
+              }}
+            >
+              PATENT VALUATION
+            </div>
+            <div
+              style={{
+                fontFamily: "'Anton', sans-serif",
+                fontSize: 140,
+                color: "#E2B17A",
                 lineHeight: 1,
               }}
             >
@@ -221,95 +330,60 @@ export const Act1_TheInvisiblePattern: React.FC = () => {
             </div>
             <div
               style={{
-                fontFamily: "'Courier New', monospace",
-                fontSize: 14,
-                color: "#888",
+                fontFamily: "'Space Grotesk', sans-serif",
+                fontSize: 28,
+                fontWeight: 700,
+                color: "#FFFFFF",
+                marginTop: 15,
+                letterSpacing: 2,
               }}
             >
-              RIGHTS TRANSFERRED. INVENTORS MOVED ON.
+              SOLD THE RIGHTS AND MOVED ON.
             </div>
           </div>
         )}
 
-        {/* SECTION E: The Hook - Circle vs. Bars Tease */}
-        {circleVsBars && (
+        {/* SUBTITLE TELEPROMPTER */}
+        <div
+          style={{
+            position: "absolute",
+            bottom: 45,
+            left: 80,
+            right: 80,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            background: "rgba(12, 14, 20, 0.75)",
+            border: "1px solid rgba(255, 255, 255, 0.08)",
+            padding: "14px 24px",
+            borderRadius: 6,
+            backdropFilter: "blur(8px)",
+          }}
+        >
           <div
             style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 120,
-              zIndex: 20,
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontSize: 18,
+              color: "#E5E7EB",
+              fontWeight: 500,
             }}
           >
-            {/* Bullseye Circle */}
-            <div style={{ textAlign: "center" }}>
-              <svg width="240" height="240" viewBox="0 0 200 200">
-                <circle cx="100" cy="100" r="90" fill="#FF1E44" />
-                <circle cx="100" cy="100" r="72" fill="#08090D" />
-                <circle cx="100" cy="100" r="54" fill="#FF1E44" />
-                <circle cx="100" cy="100" r="36" fill="#08090D" />
-                <circle cx="100" cy="100" r="18" fill="#FF1E44" />
-              </svg>
-              <div
-                style={{
-                  fontFamily: "'Impact', sans-serif",
-                  fontSize: 28,
-                  color: "#FF1E44",
-                  marginTop: 16,
-                  letterSpacing: 2,
-                }}
-              >
-                THE CIRCLE
-              </div>
-            </div>
-
-            <div
-              style={{
-                fontFamily: "'Impact', sans-serif",
-                fontSize: 48,
-                color: "#556",
-              }}
-            >
-              VS
-            </div>
-
-            {/* Straight Bars */}
-            <div style={{ textAlign: "center" }}>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 6,
-                  height: 240,
-                  justifyContent: "center",
-                }}
-              >
-                {[8, 18, 6, 24, 10, 30, 8, 14, 26, 6].map((w, i) => (
-                  <div
-                    key={i}
-                    style={{
-                      width: w * 1.6,
-                      height: 200,
-                      backgroundColor: "#00F5A0",
-                      boxShadow: "0 0 15px rgba(0,245,160,0.4)",
-                    }}
-                  />
-                ))}
-              </div>
-              <div
-                style={{
-                  fontFamily: "'Impact', sans-serif",
-                  fontSize: 28,
-                  color: "#00F5A0",
-                  marginTop: 16,
-                  letterSpacing: 2,
-                }}
-              >
-                THE STRAIGHT BARS
-              </div>
-            </div>
+            {frame < 240 && "Somewhere within arm's reach there's a pattern of black lines..."}
+            {frame >= 240 && frame < 450 && "You've seen them 10,000 times, you've never really looked."}
+            {frame >= 450 && frame < 690 && "That pattern was first sketched in the sand of a Florida beach in 1949."}
+            {frame >= 690 && frame < 870 && "And then it did absolutely nothing for 25 years."}
+            {frame >= 870 && "Its inventors sold the rights for $15,000 and moved on."}
           </div>
-        )}
+          <div
+            style={{
+              fontFamily: "'Space Mono', monospace",
+              fontSize: 11,
+              color: "#6B7280",
+            }}
+          >
+            FRAME {frame} / 1080
+          </div>
+        </div>
       </AbsoluteFill>
     </CameraRig>
   );
