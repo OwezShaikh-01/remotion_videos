@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Core Test Frame D - The Lie Detector Check Digit Math</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Anton&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Space+Grotesk:wght@500;700;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1920px;
+    height: 1080px;
+    background: #07090E;
+    color: #F3F4F6;
+    font-family: 'Space Grotesk', sans-serif;
+    overflow: hidden;
+    position: relative;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Grid blueprint background */
+  .grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(0, 229, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 229, 255, 0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  .radial-glow {
+    position: absolute;
+    width: 900px;
+    height: 900px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 229, 255, 0.08) 0%, rgba(255, 59, 48, 0.04) 40%, transparent 70%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  .film-grain {
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23grain)' opacity='0.06'/%3E%3C/svg%3E");
+    pointer-events: none;
+    mix-blend-mode: overlay;
+  }
+
+  /* Header */
+  .header {
+    position: absolute;
+    top: 60px;
+    left: 90px;
+    z-index: 10;
+  }
+
+  .pill {
+    display: inline-block;
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #00E5FF;
+    background: rgba(0, 229, 255, 0.1);
+    border: 1px solid rgba(0, 229, 255, 0.35);
+    padding: 6px 14px;
+    border-radius: 4px;
+    margin-bottom: 12px;
+  }
+
+  .headline {
+    font-family: 'Anton', sans-serif;
+    font-size: 78px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    line-height: 1;
+    color: #FFF;
+  }
+  .headline span {
+    color: #FF3B30;
+  }
+
+  /* Main Display: Barcode & Digit Ribbon */
+  .center-stage {
+    position: absolute;
+    top: 240px;
+    left: 90px;
+    right: 90px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 36px;
+  }
+
+  .barcode-strip {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    height: 130px;
+    padding: 16px 28px;
+    background: #FFFFFF;
+    border-radius: 8px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.2);
+  }
+  .bar {
+    background: #000;
+    height: 100%;
+  }
+
+  .digit-strip {
+    display: flex;
+    gap: 12px;
+  }
+
+  .digit-card {
+    width: 100px;
+    height: 110px;
+    border-radius: 10px;
+    background: #10141E;
+    border: 1px solid #232A3D;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+  }
+
+  .digit-card .index-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: #6B7280;
+    margin-bottom: 2px;
+  }
+
+  .digit-card .val {
+    font-family: 'Anton', sans-serif;
+    font-size: 52px;
+    line-height: 1;
+    color: #FFF;
+  }
+
+  .digit-card.odd {
+    border-color: #E2B17A;
+    background: linear-gradient(180deg, rgba(226, 177, 122, 0.15) 0%, rgba(16, 20, 30, 0.95) 100%);
+  }
+  .digit-card.odd .val {
+    color: #E2B17A;
+  }
+
+  .digit-card.even {
+    border-color: #00E5FF;
+    background: linear-gradient(180deg, rgba(0, 229, 255, 0.15) 0%, rgba(16, 20, 30, 0.95) 100%);
+  }
+  .digit-card.even .val {
+    color: #00E5FF;
+  }
+
+  .digit-card.check {
+    border-color: #FF3B30;
+    background: linear-gradient(180deg, rgba(255, 59, 48, 0.25) 0%, rgba(16, 20, 30, 0.95) 100%);
+    box-shadow: 0 0 30px rgba(255, 59, 48, 0.35);
+  }
+  .digit-card.check .val {
+    color: #FF3B30;
+  }
+
+  /* Math equation breakdown row */
+  .math-pipeline {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    width: 100%;
+    margin-top: 20px;
+  }
+
+  .math-card {
+    background: #0E131E;
+    border: 1px solid #1E273B;
+    border-radius: 12px;
+    padding: 24px 28px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .math-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+  }
+  .math-card.c1::before { background: #E2B17A; }
+  .math-card.c2::before { background: #00E5FF; }
+  .math-card.c3::before { background: #9E7BFF; }
+  .math-card.c4::before { background: #FF3B30; }
+
+  .step-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #8C99AF;
+    margin-bottom: 8px;
+  }
+
+  .calc-formula {
+    font-family: 'Space Mono', monospace;
+    font-size: 14px;
+    color: #C0C8D6;
+    margin-bottom: 12px;
+    line-height: 1.4;
+  }
+
+  .big-result {
+    font-family: 'Anton', sans-serif;
+    font-size: 48px;
+    line-height: 1;
+    color: #FFF;
+  }
+  .big-result.c1 { color: #E2B17A; }
+  .big-result.c2 { color: #00E5FF; }
+  .big-result.c3 { color: #9E7BFF; }
+  .big-result.c4 { color: #FF3B30; }
+
+  /* Bottom status strip */
+  .bottom-alert {
+    position: absolute;
+    bottom: 45px;
+    left: 90px;
+    right: 90px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 59, 48, 0.08);
+    border: 1px solid rgba(255, 59, 48, 0.3);
+    padding: 16px 28px;
+    border-radius: 8px;
+  }
+
+  .alert-text {
+    font-family: 'Space Mono', monospace;
+    font-size: 14px;
+    color: #FF7B72;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #FF3B30;
+    box-shadow: 0 0 12px #FF3B30;
+  }
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+<div class="radial-glow"></div>
+<div class="film-grain"></div>
+
+<div class="header">
+  <div class="pill">ACT 11 // THE MATHEMATICAL LIE DETECTOR</div>
+  <div class="headline">THE BARCODE HAS A <span>LIE DETECTOR</span> BUILT IN</div>
+</div>
+
+<div class="center-stage">
+  <!-- Barcode Visual Representation -->
+  <div class="barcode-strip">
+    <div class="bar" style="width: 4px;"></div>
+    <div class="bar" style="width: 2px; margin-left: 4px;"></div>
+    <div class="bar" style="width: 8px; margin-left: 6px;"></div>
+    <div class="bar" style="width: 3px; margin-left: 2px;"></div>
+    <div class="bar" style="width: 6px; margin-left: 6px;"></div>
+    <div class="bar" style="width: 2px; margin-left: 4px;"></div>
+    <div class="bar" style="width: 4px; margin-left: 8px;"></div>
+    <div class="bar" style="width: 10px; margin-left: 2px;"></div>
+    <div class="bar" style="width: 2px; margin-left: 6px;"></div>
+    <div class="bar" style="width: 6px; margin-left: 4px;"></div>
+    <div class="bar" style="width: 4px; margin-left: 2px;"></div>
+    <div class="bar" style="width: 8px; margin-left: 8px;"></div>
+    <div class="bar" style="width: 3px; margin-left: 4px;"></div>
+    <div class="bar" style="width: 2px; margin-left: 6px;"></div>
+    <div class="bar" style="width: 8px; margin-left: 2px;"></div>
+    <div class="bar" style="width: 4px; margin-left: 4px;"></div>
+    <div class="bar" style="width: 10px; margin-left: 6px;"></div>
+    <div class="bar" style="width: 4px; margin-left: 2px;"></div>
+  </div>
+
+  <!-- The 12 Digits Ribbon -->
+  <div class="digit-strip">
+    <div class="digit-card odd"><span class="index-label">POS 1</span><span class="val">0</span></div>
+    <div class="digit-card even"><span class="index-label">POS 2</span><span class="val">3</span></div>
+    <div class="digit-card odd"><span class="index-label">POS 3</span><span class="val">6</span></div>
+    <div class="digit-card even"><span class="index-label">POS 4</span><span class="val">0</span></div>
+    <div class="digit-card odd"><span class="index-label">POS 5</span><span class="val">0</span></div>
+    <div class="digit-card even"><span class="index-label">POS 6</span><span class="val">0</span></div>
+    <div class="digit-card odd"><span class="index-label">POS 7</span><span class="val">2</span></div>
+    <div class="digit-card even"><span class="index-label">POS 8</span><span class="val">9</span></div>
+    <div class="digit-card odd"><span class="index-label">POS 9</span><span class="val">1</span></div>
+    <div class="digit-card even"><span class="index-label">POS 10</span><span class="val">4</span></div>
+    <div class="digit-card odd"><span class="index-label">POS 11</span><span class="val">5</span></div>
+    <div class="digit-card check"><span class="index-label">CHECK</span><span class="val">2</span></div>
+  </div>
+
+  <!-- Realtime calculation cards -->
+  <div class="math-pipeline">
+    <div class="math-card c1">
+      <div class="step-tag">Step 1 • Odd Positions</div>
+      <div class="calc-formula">0 + 6 + 0 + 2 + 1 + 5 = 14<br>14 × 3</div>
+      <div class="big-result c1">42</div>
+    </div>
+
+    <div class="math-card c2">
+      <div class="step-tag">Step 2 • Even Positions</div>
+      <div class="calc-formula">3 + 0 + 0 + 9 + 4<br>Direct sum</div>
+      <div class="big-result c2">16</div>
+    </div>
+
+    <div class="math-card c3">
+      <div class="step-tag">Step 3 • Combined Total</div>
+      <div class="calc-formula">42 + 16 = 58<br>Distance to next 10 (60)</div>
+      <div class="big-result c3">58</div>
+    </div>
+
+    <div class="math-card c4">
+      <div class="step-tag">Step 4 • Verify Check Digit</div>
+      <div class="calc-formula">60 − 58 = 2<br>Matches 12th Digit Exactly</div>
+      <div class="big-result c4">CHECK = 2</div>
+    </div>
+  </div>
+</div>
+
+<div class="bottom-alert">
+  <div class="alert-text">
+    <div class="indicator"></div>
+    <span>HARDWARE INTEGRITY GUARANTEE: IF A SCANNER READS EVEN A SINGLE STRAY BIT WRONG, THE EQUATION BREAKS AND THE REGISTER BEEPS ERROR.</span>
+  </div>
+  <div style="font-family: 'Space Mono', monospace; font-size: 13px; color: #8C99AF;">
+    ALGORITHM: UPC-A MODULO-10
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Keyframe 02 - Philadelphia 1948 Grocery Bottleneck</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Anton&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Space+Grotesk:wght@500;700;900&family=Special+Elite&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1920px;
+    height: 1080px;
+    background: #0A0A0E;
+    color: #F4F4F6;
+    font-family: 'Space Grotesk', sans-serif;
+    overflow: hidden;
+    position: relative;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(255, 184, 0, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 184, 0, 0.03) 1px, transparent 1px);
+    background-size: 70px 70px;
+  }
+
+  .radial-vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 60% 40%, rgba(255, 107, 0, 0.08) 0%, rgba(10, 10, 14, 0.92) 75%);
+  }
+
+  .film-grain {
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23grain)' opacity='0.08'/%3E%3C/svg%3E");
+    pointer-events: none;
+    mix-blend-mode: overlay;
+  }
+
+  .top-header {
+    position: absolute;
+    top: 55px;
+    left: 85px;
+    z-index: 20;
+  }
+
+  .chapter-pill {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #FFB800;
+    background: rgba(255, 184, 0, 0.12);
+    border: 1px solid rgba(255, 184, 0, 0.35);
+    padding: 6px 16px;
+    border-radius: 4px;
+    display: inline-block;
+    margin-bottom: 14px;
+  }
+
+  .headline {
+    font-family: 'Anton', sans-serif;
+    font-size: 80px;
+    line-height: 0.95;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #FFFFFF;
+  }
+  .headline span { color: #FF453A; }
+
+  /* Main Split Stage */
+  .stage-layout {
+    position: absolute;
+    top: 230px;
+    left: 85px;
+    right: 85px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+  }
+
+  /* Left: 1948 Mechanical Chaos */
+  .card-drexel {
+    background: #111219;
+    border: 1px solid #232533;
+    border-radius: 12px;
+    padding: 34px;
+    position: relative;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+  }
+
+  .drexel-stamp {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    border: 3px solid #FF453A;
+    color: #FF453A;
+    font-family: 'Special Elite', monospace;
+    font-size: 32px;
+    font-weight: 900;
+    padding: 6px 18px;
+    transform: rotate(8deg);
+    border-radius: 6px;
+    letter-spacing: 3px;
+    background: rgba(255, 69, 58, 0.08);
+  }
+
+  .card-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: #9CA3AF;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+
+  .quote-box {
+    font-size: 26px;
+    line-height: 1.35;
+    font-weight: 700;
+    color: #F3F4F6;
+    margin-bottom: 24px;
+  }
+
+  .crisis-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 20px;
+  }
+
+  .stat-tile {
+    background: #181A24;
+    border-left: 3px solid #FFB800;
+    padding: 14px 18px;
+    border-radius: 4px;
+  }
+  .stat-tile.red { border-left-color: #FF453A; }
+  .stat-tile strong {
+    display: block;
+    font-family: 'Anton', sans-serif;
+    font-size: 32px;
+    color: #FFF;
+    margin-bottom: 2px;
+  }
+  .stat-tile span {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: #8D96A5;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* Right: The Drexel Blueprint confrontation */
+  .card-blueprint {
+    background: #0C121E;
+    border: 1px solid #1A2840;
+    border-radius: 12px;
+    padding: 34px;
+    position: relative;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+  }
+
+  .blueprint-schematic {
+    height: 220px;
+    border: 1px dashed rgba(0, 229, 255, 0.35);
+    background: rgba(0, 229, 255, 0.03);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding: 20px;
+  }
+
+  .hallway-convo {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    line-height: 1.8;
+    color: #A0C0E0;
+    width: 100%;
+  }
+  .hallway-convo b { color: #00E5FF; }
+  .hallway-convo .dean-resp { color: #FF453A; font-weight: bold; }
+
+  .eavesdrop-badge {
+    position: absolute;
+    bottom: -15px;
+    right: 25px;
+    background: #00E5FF;
+    color: #05101A;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 900;
+    font-size: 11px;
+    padding: 4px 14px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .bottom-banner {
+    position: absolute;
+    bottom: 50px;
+    left: 85px;
+    right: 85px;
+    background: #11131B;
+    border: 1px solid #232737;
+    border-radius: 8px;
+    padding: 18px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .banner-text {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    color: #D1D5DB;
+  }
+  .banner-text em { color: #FFB800; font-style: normal; }
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+<div class="radial-vignette"></div>
+<div class="film-grain"></div>
+
+<div class="top-header">
+  <div class="chapter-pill">ACT 03 // PHILADELPHIA 1948</div>
+  <div class="headline">A FOOD CHAIN PRESIDENT WALKS IN.<br>THE DEAN SAYS <span>NO</span>.</div>
+</div>
+
+<div class="stage-layout">
+  <!-- Left Box -->
+  <div class="card-drexel">
+    <div class="drexel-stamp">REJECTED</div>
+    <div class="card-title">Supermarket Bottleneck Crisis // 1948</div>
+    <div class="quote-box">
+      "Checkout is slow. Cashiers key in every single price by hand. Mistakes are everywhere... and nobody knows what's sitting on the shelves."
+    </div>
+
+    <div class="crisis-stats">
+      <div class="stat-tile red">
+        <strong>100%</strong>
+        <span>Manual Cashier Punching</span>
+      </div>
+      <div class="stat-tile">
+        <strong>0 SEC</strong>
+        <span>Realtime Shelf Visibility</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Box -->
+  <div class="card-blueprint">
+    <div class="card-title">Drexel Institute of Technology // Hallway Wiretap</div>
+    <div class="blueprint-schematic">
+      <div class="hallway-convo">
+        <b>FOOD CHAIN PRESIDENT:</b> "Could you build a way for a store to read a product automatically?"<br><br>
+        <b>DEAN DISQUE:</b> "<span class="dean-resp">NO. IMPOSSIBLE.</span>"<br><br>
+        <b>OVERHEARD BY:</b> Graduate Student Bernard Silver (Standing nearby)
+      </div>
+      <div class="eavesdrop-badge">THE SPARK IGNITES</div>
+    </div>
+
+    <div style="margin-top: 25px; font-family: 'Space Mono', monospace; font-size: 13px; color: #9CA3AF; line-height: 1.6;">
+      Silver immediately rushes to his brilliant friend <b>Norman Joseph Woodland</b>. Woodland refuses to drop the problem.
+    </div>
+  </div>
+</div>
+
+<div class="bottom-banner">
+  <div class="banner-text">
+    ARCHIVAL RECORD: <em>DREXEL INSTITUTE OF TECHNOLOGY, PHILADELPHIA PA — OCTOBER 1948</em>
+  </div>
+  <div style="font-family: 'Space Mono', monospace; font-size: 12px; color: #6B7280;">
+    METRIC: 4 SECONDS PER ITEM DELAY
+  </div>
+</div>
+
+</body>
+</html>

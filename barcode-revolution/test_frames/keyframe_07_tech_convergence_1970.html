@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Keyframe 07 - The 1970 Technological Convergence</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Anton&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Space+Grotesk:wght@500;700;900&family=Special+Elite&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1920px;
+    height: 1080px;
+    background: #080A10;
+    color: #F3F4F6;
+    font-family: 'Space Grotesk', sans-serif;
+    overflow: hidden;
+    position: relative;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(16, 185, 129, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(16, 185, 129, 0.04) 1px, transparent 1px);
+    background-size: 70px 70px;
+  }
+
+  .film-grain {
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23grain)' opacity='0.08'/%3E%3C/svg%3E");
+    pointer-events: none;
+    mix-blend-mode: overlay;
+  }
+
+  .header {
+    position: absolute;
+    top: 55px;
+    left: 85px;
+    z-index: 20;
+  }
+
+  .pill {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #10B981;
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    padding: 6px 16px;
+    border-radius: 4px;
+    display: inline-block;
+    margin-bottom: 14px;
+  }
+
+  .headline {
+    font-family: 'Anton', sans-serif;
+    font-size: 80px;
+    line-height: 0.95;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #FFFFFF;
+  }
+  .headline span { color: #10B981; }
+
+  /* 3 Convergence Elements */
+  .center-stage {
+    position: absolute;
+    top: 230px;
+    left: 85px;
+    right: 85px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.2fr;
+    gap: 30px;
+  }
+
+  .card-tech {
+    background: #0E131E;
+    border: 1px solid #1C273C;
+    border-radius: 12px;
+    padding: 28px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+  }
+
+  .tech-year {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: #10B981;
+    margin-bottom: 6px;
+  }
+
+  .tech-title {
+    font-family: 'Anton', sans-serif;
+    font-size: 28px;
+    color: #FFF;
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+  }
+
+  .tech-desc {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: #9CA3AF;
+    line-height: 1.6;
+  }
+
+  /* Chip Graphic */
+  .chip-box {
+    margin-top: 18px;
+    height: 110px;
+    background: #060910;
+    border: 1px solid #233452;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 14px;
+    color: #10B981;
+    position: relative;
+  }
+  .chip-pins {
+    position: absolute;
+    top: -6px;
+    bottom: -6px;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+  }
+  .pin {
+    width: 6px;
+    height: 6px;
+    background: #D4AF37;
+  }
+
+  /* Right: Committee showdown */
+  .card-committee {
+    background: #111420;
+    border: 1px solid #23293D;
+    border-radius: 12px;
+    padding: 28px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+  }
+
+  .committee-tag {
+    font-family: 'Special Elite', monospace;
+    font-size: 12px;
+    color: #E2B17A;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+  }
+
+  .bottom-bar {
+    position: absolute;
+    bottom: 50px;
+    left: 85px;
+    right: 85px;
+    background: #11141E;
+    border: 1px solid #20273A;
+    border-radius: 8px;
+    padding: 18px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+<div class="film-grain"></div>
+
+<div class="header">
+  <div class="pill">ACT 08 // THE 1970 CONVERGENCE</div>
+  <div class="headline">THE PATENT EXPIRES IN 1969.<br>THE WORLD <span>FINALLY CATCHES UP</span>.</div>
+</div>
+
+<div class="center-stage">
+  <!-- Helium-Neon Laser -->
+  <div class="card-tech">
+    <div class="tech-year">HARDWARE MILESTONE</div>
+    <div class="tech-title">GAS LASER DOWNSIZING</div>
+    <div class="tech-desc">
+      Helium-Neon lasers shrink from research lab monstrosities into compact, affordable $100 glass tubes capable of bouncing red coherent beams across glass mirrors.
+    </div>
+    <div class="chip-box" style="border-color: #FF3B30; color: #FF3B30;">
+      [ 632.8 nm He-Ne TUBE ]
+    </div>
+  </div>
+
+  <!-- Microprocessor -->
+  <div class="card-tech">
+    <div class="tech-year">1971 REVOLUTION</div>
+    <div class="tech-title">INTEL 4004 MICROPROCESSOR</div>
+    <div class="tech-desc">
+      The world's first commercial single-chip CPU. Compute power that once filled a room now fits inside a cash register drawer for a few hundred dollars.
+    </div>
+    <div class="chip-box">
+      [ INTEL 4004 SILICON ]
+    </div>
+  </div>
+
+  <!-- Ad Hoc Committee -->
+  <div class="card-committee">
+    <div class="committee-tag">THE 1970 MANDATE</div>
+    <div style="font-family: 'Anton', sans-serif; font-size: 28px; color: #FFF; margin-bottom: 12px;">
+      THE AD HOC COMMITTEE
+    </div>
+    <div style="font-family: 'Space Mono', monospace; font-size: 12px; color: #9CA3AF; line-height: 1.6;">
+      US grocery chains unite. They issue an ultimatum to tech titans (IBM, RCA, NCR, Litton):<br><br>
+      <b style="color: #FFF;">"Present one unified machine code symbol. 14 proposals submitted. Only one will define human commerce for the next century."</b>
+    </div>
+  </div>
+</div>
+
+<div class="bottom-bar">
+  <div style="font-family: 'Space Mono', monospace; font-size: 13px; color: #D1D5DB;">
+    HISTORIC IRONY: <em>WOODLAND & SILVER EARNED $0 FROM THE REVOLUTION BECAUSE THEIR PATENT EXPIRED IN 1969.</em>
+  </div>
+  <div style="font-family: 'Space Mono', monospace; font-size: 12px; color: #10B981;">
+    CONVERGENCE: READY
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Anton&family=Permanent+Marker&family=Special+Elite&family=Space+Grotesk:wght@700;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1920px;
+    height: 1080px;
+    background: #0B0A08;
+    color: #F5EFEB;
+    font-family: 'Space Grotesk', sans-serif;
+    overflow: hidden;
+    position: relative;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Cinematic Sun-Raked Sand Dune Texture */
+  .sand-bg {
+    position: absolute;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse at 70% 20%, rgba(240, 185, 110, 0.25) 0%, transparent 60%),
+      radial-gradient(circle at 20% 80%, rgba(180, 120, 60, 0.15) 0%, transparent 50%),
+      linear-gradient(135deg, #18140E 0%, #0A0907 100%);
+  }
+
+  /* Procedural Sand Ripple SVGs */
+  .dune-shadows {
+    position: absolute;
+    inset: 0;
+    opacity: 0.35;
+    background-image: repeating-linear-gradient(
+      -35deg,
+      transparent,
+      transparent 30px,
+      rgba(212, 163, 115, 0.08) 32px,
+      rgba(0, 0, 0, 0.4) 45px
+    );
+  }
+
+  /* 35mm Gritty Film Grain Overlay */
+  .film-grain {
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23grain)' opacity='0.08'/%3E%3C/svg%3E");
+    pointer-events: none;
+    mix-blend-mode: overlay;
+  }
+
+  /* Dramatic Top Header - Massive Editorial Stamped Typography */
+  .editorial-header {
+    position: absolute;
+    top: 50px;
+    left: 80px;
+    z-index: 20;
+  }
+
+  .chapter-pill {
+    font-family: 'Special Elite', monospace;
+    font-size: 14px;
+    color: #E2B17A;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    display: inline-block;
+    background: rgba(226, 177, 122, 0.12);
+    border: 1px solid rgba(226, 177, 122, 0.3);
+    padding: 6px 16px;
+    transform: rotate(-1deg);
+    margin-bottom: 12px;
+  }
+
+  .huge-quote {
+    font-family: 'Anton', sans-serif;
+    font-size: 82px;
+    line-height: 0.95;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #FFF;
+    text-shadow: 0 10px 30px rgba(0,0,0,0.8);
+  }
+  .huge-quote span {
+    color: #E2B17A;
+    display: inline-block;
+    transform: skew(-4deg);
+  }
+
+  /* Tactile Scotch-Taped Archival Photo (Woodland) */
+  .archival-polaroid {
+    position: absolute;
+    top: 60px;
+    right: 90px;
+    width: 250px;
+    background: #EAE5D9;
+    padding: 12px 12px 34px 12px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 0 1px rgba(0,0,0,0.2);
+    transform: rotate(4deg);
+    z-index: 25;
+  }
+  .polaroid-img {
+    width: 100%;
+    height: 180px;
+    background: #252830;
+    overflow: hidden;
+    position: relative;
+    filter: contrast(130%) grayscale(100%) sepia(20%);
+    border: 1px solid #C8C2B4;
+  }
+  .polaroid-img svg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .polaroid-caption {
+    font-family: 'Special Elite', monospace;
+    font-size: 11px;
+    color: #333;
+    margin-top: 10px;
+    text-align: center;
+    letter-spacing: 0.5px;
+  }
+
+  /* Scotch Tape Strip */
+  .tape-strip {
+    position: absolute;
+    top: -14px;
+    left: 30%;
+    width: 90px;
+    height: 30px;
+    background: rgba(255, 255, 230, 0.45);
+    border-left: 2px dashed rgba(255,255,255,0.3);
+    border-right: 2px dashed rgba(255,255,255,0.3);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    transform: rotate(-6deg);
+    backdrop-filter: blur(2px);
+  }
+
+  /* The Central Kinetic Metaphor: Sand Furrow & Extrusion */
+  .trench-stage {
+    position: absolute;
+    top: 250px;
+    left: 80px;
+    right: 80px;
+    bottom: 50px;
+  }
+
+  /* Glowing Amber Morse Code Particles on Top */
+  .morse-light-strip {
+    position: absolute;
+    top: 0;
+    left: 220px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    z-index: 15;
+  }
+
+  .morse-element {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+  }
+
+  .glow-dot {
+    width: 22px;
+    height: 22px;
+    background: #FFAE42;
+    border-radius: 50%;
+    box-shadow: 
+      0 0 15px #FF9F1C,
+      0 0 35px #FF9F1C,
+      0 0 70px rgba(255, 159, 28, 0.8);
+  }
+
+  .glow-dash {
+    width: 90px;
+    height: 22px;
+    background: #FFAE42;
+    border-radius: 6px;
+    box-shadow: 
+      0 0 15px #FF9F1C,
+      0 0 35px #FF9F1C,
+      0 0 70px rgba(255, 159, 28, 0.8);
+  }
+
+  .morse-code-label {
+    font-family: 'Special Elite', monospace;
+    font-size: 13px;
+    color: #E2B17A;
+    margin-top: 8px;
+    letter-spacing: 2px;
+  }
+
+  /* Deep Sand Furrow Trenches (Diagonal Pull) */
+  .sand-furrows {
+    position: absolute;
+    top: 60px;
+    left: 200px;
+    width: 1350px;
+    height: 480px;
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+    z-index: 10;
+  }
+
+  /* Individual Extruded Vertical Bar with Real Depth & Sand Wake */
+  .furrow-bar {
+    position: relative;
+    background: #000000;
+    border-left: 2px solid rgba(255, 230, 190, 0.5);
+    border-right: 3px solid rgba(0, 0, 0, 0.9);
+    box-shadow: 
+      15px 25px 40px rgba(0, 0, 0, 0.9),
+      -4px 0 15px rgba(226, 177, 122, 0.2);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  /* Sand displacement ridges at bottom of each bar */
+  .furrow-bar::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: linear-gradient(180deg, transparent 0%, rgba(212, 163, 115, 0.5) 70%, #D4A373 100%);
+    filter: blur(3px);
+  }
+
+  /* Hand-drawn grease pencil notes & arrows */
+  .grease-note {
+    position: absolute;
+    font-family: 'Permanent Marker', cursive;
+    color: #FF3344;
+    transform: rotate(-12deg);
+    z-index: 30;
+    font-size: 26px;
+    line-height: 1.1;
+    text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+  }
+
+  .arrow-doodle {
+    position: absolute;
+    z-index: 30;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.6));
+  }
+
+  /* Sand Drag Direction Arrow & Callout */
+  .beach-stamp {
+    position: absolute;
+    bottom: 25px;
+    left: 80px;
+    background: rgba(14, 12, 9, 0.92);
+    border: 1px solid rgba(226, 177, 122, 0.4);
+    padding: 16px 24px;
+    border-radius: 4px;
+    font-family: 'Special Elite', monospace;
+    font-size: 13px;
+    color: #D4A373;
+    line-height: 1.6;
+    max-width: 420px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.7);
+    z-index: 20;
+  }
+
+  .beach-stamp strong {
+    color: #FFFFFF;
+    font-size: 15px;
+    display: block;
+    margin-bottom: 4px;
+    letter-spacing: 1px;
+  }
+</style>
+</head>
+<body>
+  <div class="sand-bg"></div>
+  <div class="dune-shadows"></div>
+  <div class="film-grain"></div>
+
+  <!-- Editorial Headline -->
+  <div class="editorial-header">
+    <div class="chapter-pill">MIAMI BEACH, FLORIDA // JANUARY 1949</div>
+    <div class="huge-quote">
+      WHAT IF YOU STRETCHED<br>
+      THEM <span>DOWNWARD?</span>
+    </div>
+  </div>
+
+  <!-- Woodland Archival Polaroid with Tape -->
+  <div class="archival-polaroid">
+    <div class="tape-strip"></div>
+    <div class="polaroid-img">
+      <!-- Silhouette Illustration of Woodland Thinking -->
+      <svg width="220" height="180" viewBox="0 0 200 180">
+        <path d="M70,180 C70,120 90,95 105,90 C125,85 135,65 135,45 C135,25 118,10 98,10 C78,10 65,25 65,45 C65,58 72,70 80,75 C72,82 50,105 45,180 Z" fill="#DDD" />
+        <circle cx="102" cy="42" r="6" fill="#252830" />
+        <path d="M100,55 Q115,60 120,50" stroke="#252830" stroke-width="2.5" fill="none" />
+      </svg>
+    </div>
+    <div class="polaroid-caption">N.J. WOODLAND // 27 YRS OLD</div>
+  </div>
+
+  <!-- Red Grease Pencil Annotations -->
+  <div class="grease-note" style="top: 240px; left: 880px;">
+    4 FINGERS PULLED<br>THROUGH SAND!
+  </div>
+
+  <svg class="arrow-doodle" style="top: 290px; left: 1040px;" width="140" height="110" viewBox="0 0 140 110">
+    <path d="M10,15 Q60,40 50,90" fill="none" stroke="#FF3344" stroke-width="4" stroke-linecap="round" />
+    <path d="M38,75 L50,90 L65,80" fill="none" stroke="#FF3344" stroke-width="4" stroke-linecap="round" />
+  </svg>
+
+  <!-- The Extrusion Trench Area -->
+  <div class="trench-stage">
+    <!-- Top Phosphor Morse Glow -->
+    <div class="morse-light-strip">
+      <div class="morse-element">
+        <div class="glow-dot"></div>
+        <div class="morse-code-label">DOT [·]</div>
+      </div>
+      <div class="morse-element">
+        <div class="glow-dash"></div>
+        <div class="morse-code-label">DASH [—]</div>
+      </div>
+      <div class="morse-element">
+        <div class="glow-dot"></div>
+        <div class="morse-code-label">DOT [·]</div>
+      </div>
+      <div class="morse-element">
+        <div class="glow-dash" style="width: 120px;"></div>
+        <div class="morse-code-label">WIDE DASH [——]</div>
+      </div>
+      <div class="morse-element">
+        <div class="glow-dot"></div>
+        <div class="morse-code-label">DOT [·]</div>
+      </div>
+      <div class="morse-element">
+        <div class="glow-dash"></div>
+        <div class="morse-code-label">DASH [—]</div>
+      </div>
+    </div>
+
+    <!-- The Deep Vertical Extruded Bars -->
+    <div class="sand-furrows">
+      <!-- Dot 1 -->
+      <div class="furrow-bar" style="width: 14px; height: 420px;"></div>
+      <div style="width: 30px;"></div>
+
+      <!-- Dash 1 -->
+      <div class="furrow-bar" style="width: 76px; height: 420px;"></div>
+      <div style="width: 26px;"></div>
+
+      <!-- Dot 2 -->
+      <div class="furrow-bar" style="width: 14px; height: 420px;"></div>
+      <div style="width: 38px;"></div>
+
+      <!-- Wide Dash 2 -->
+      <div class="furrow-bar" style="width: 110px; height: 420px; box-shadow: 20px 30px 50px rgba(0,0,0,0.95);"></div>
+      <div style="width: 32px;"></div>
+
+      <!-- Dot 3 -->
+      <div class="furrow-bar" style="width: 14px; height: 420px;"></div>
+      <div style="width: 22px;"></div>
+
+      <!-- Dash 3 -->
+      <div class="furrow-bar" style="width: 76px; height: 420px;"></div>
+      <div style="width: 44px;"></div>
+
+      <!-- Dense Final Bars -->
+      <div class="furrow-bar" style="width: 18px; height: 420px;"></div>
+      <div style="width: 16px;"></div>
+      <div class="furrow-bar" style="width: 95px; height: 420px;"></div>
+      <div style="width: 20px;"></div>
+      <div class="furrow-bar" style="width: 14px; height: 420px;"></div>
+    </div>
+  </div>
+
+  <!-- Field Evidence Stamp -->
+  <div class="beach-stamp">
+    <strong>GENESIS OF THE OPTICAL CODE</strong>
+    "Dots become thin lines. Dashes become thick lines. The ancestor of every barcode on Earth was literally dragged into the sand."
+  </div>
+</body>
+</html>
