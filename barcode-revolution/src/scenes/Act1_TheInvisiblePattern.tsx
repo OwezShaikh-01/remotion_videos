@@ -5,62 +5,112 @@ import {
   spring,
   useCurrentFrame,
   useVideoConfig,
+  Audio,
+  staticFile,
 } from "remotion";
 import { CameraRig } from "../components/CameraRig";
+import { GrainOverlay } from "../components/GrainOverlay";
 
-export const Act1_TheInvisiblePattern: React.FC = () => {
+interface Act1Props {
+  includeAudio?: boolean;
+}
+
+export const Act1_TheInvisiblePattern: React.FC<Act1Props> = ({
+  includeAudio = false,
+}) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  // Phase 1: Macro lines reveal (Frames 0 -> 240)
-  const linesExpansion = spring({
+  // ---------------------------------------------------------------------------
+  // TIMING & SPRINGS (Total: 1,080 frames @ 30fps = 36.00s)
+  // Beat 1: 0 -> 240   (0s - 8s)   "Look around you... pattern of black lines"
+  // Beat 2: 240 -> 450 (8s - 15s)  "10,000 times... never really looked"
+  // Beat 3: 450 -> 690 (15s - 23s) "Florida beach 1949... sketched in the sand"
+  // Beat 4: 690 -> 870 (23s - 29s) "Did absolutely nothing for 25 years"
+  // Beat 5: 870 -> 1080(29s - 36s) "Sold rights for $15,000 and moved on"
+  // ---------------------------------------------------------------------------
+
+  // Phase 1: Macro barcode drop & expand
+  const barsEntrance = spring({
     frame,
     fps,
-    config: { damping: 14, stiffness: 80 },
+    config: { damping: 14, stiffness: 85 },
   });
 
-  // Phase 2: 10,000 times counter (Frames 240 -> 450)
+  // Phase 2: 10,000 Counter
   const counterVal = Math.floor(
-    interpolate(frame, [240, 390], [0, 10000], {
+    interpolate(frame, [250, 400], [0, 10000], {
       extrapolateLeft: "clamp",
       extrapolateRight: "clamp",
     })
   );
-
-  // Phase 3: Florida beach flash teaser (Frames 450 -> 690)
-  const beachTease = interpolate(frame, [450, 490, 650, 690], [0, 1, 1, 0], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
-
-  // Phase 4: 25 Years Frozen Timeline (Frames 690 -> 870)
-  const frozenProgress = interpolate(frame, [690, 750], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
-
-  // Phase 5: $15,000 Patent Tag (Frames 870 -> 1080)
-  const fifteenGrandSpring = spring({
-    frame: frame - 870,
+  const counterScale = spring({
+    frame: frame - 240,
     fps,
     config: { damping: 12, stiffness: 100 },
   });
 
-  // Laser scanning blade animation
-  const laserY = interpolate(frame % 90, [0, 90], [280, 800]);
+  // Phase 3: Miami Beach 1949 transition
+  const beachFade = interpolate(frame, [450, 490, 650, 690], [0, 1, 1, 0], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  const polaroidSpring = spring({
+    frame: frame - 460,
+    fps,
+    config: { damping: 15, stiffness: 90 },
+  });
+
+  // Phase 4: 25 Years of Silence
+  const frozenProgress = interpolate(frame, [690, 740], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  const timelineProgress = interpolate(frame, [720, 840], [1949, 1974], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+
+  // Phase 5: $15,000 Buyout
+  const checkSpring = spring({
+    frame: frame - 870,
+    fps,
+    config: { damping: 13, stiffness: 95 },
+  });
+  const stampSpring = spring({
+    frame: frame - 920,
+    fps,
+    config: { damping: 10, stiffness: 120 },
+  });
+
+  // Global Continuous Laser Scanning Blade
+  const laserCycle = frame % 120;
+  const laserY = interpolate(laserCycle, [0, 120], [200, 880]);
+
+  // Reticle pulse
+  const reticlePulse = interpolate(
+    Math.sin(frame * 0.08),
+    [-1, 1],
+    [0.4, 0.9]
+  );
 
   return (
-    <CameraRig durationInFrames={1080} zoom={[1, 1.08]} panX={[0, -25]}>
+    <CameraRig durationInFrames={1080} zoom={[1, 1.06]} panX={[0, -20]}>
       <AbsoluteFill
         style={{
-          backgroundColor: "#07080B",
+          backgroundColor: "#060709",
           justifyContent: "center",
           alignItems: "center",
-          fontFamily: "'Space Grotesk', sans-serif",
+          fontFamily: "'Space Grotesk', -apple-system, sans-serif",
           overflow: "hidden",
         }}
       >
-        {/* Ambient Dark Blueprint Grid */}
+        {/* Optional Standalone Synchronized Voiceover Track */}
+        {includeAudio && (
+          <Audio src={staticFile("voiceover.wav")} startFrom={0} endAt={1080} />
+        )}
+
+        {/* Dynamic Background Grid */}
         <div
           style={{
             position: "absolute",
@@ -71,17 +121,75 @@ export const Act1_TheInvisiblePattern: React.FC = () => {
           }}
         />
 
-        {/* Cinematic Vignette */}
+        {/* Radial Dark Vignette */}
         <div
           style={{
             position: "absolute",
             inset: 0,
             background:
-              "radial-gradient(circle at 50% 50%, transparent 20%, rgba(7, 8, 11, 0.9) 85%)",
+              "radial-gradient(circle at 50% 50%, transparent 20%, rgba(6, 7, 9, 0.88) 85%)",
           }}
         />
 
-        {/* Global Laser Scanning Line */}
+        {/* 4 Corner HUD Crosshair Reticles */}
+        <div
+          style={{
+            position: "absolute",
+            top: 260,
+            left: "calc(50% - 440px)",
+            width: 32,
+            height: 32,
+            borderTop: "3px solid #00E5FF",
+            borderLeft: "3px solid #00E5FF",
+            opacity: reticlePulse,
+            pointerEvents: "none",
+            zIndex: 30,
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            top: 260,
+            right: "calc(50% - 440px)",
+            width: 32,
+            height: 32,
+            borderTop: "3px solid #00E5FF",
+            borderRight: "3px solid #00E5FF",
+            opacity: reticlePulse,
+            pointerEvents: "none",
+            zIndex: 30,
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            bottom: 240,
+            left: "calc(50% - 440px)",
+            width: 32,
+            height: 32,
+            borderBottom: "3px solid #00E5FF",
+            borderLeft: "3px solid #00E5FF",
+            opacity: reticlePulse,
+            pointerEvents: "none",
+            zIndex: 30,
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            bottom: 240,
+            right: "calc(50% - 440px)",
+            width: 32,
+            height: 32,
+            borderBottom: "3px solid #00E5FF",
+            borderRight: "3px solid #00E5FF",
+            opacity: reticlePulse,
+            pointerEvents: "none",
+            zIndex: 30,
+          }}
+        />
+
+        {/* Global Sweeping Laser Beam */}
         <div
           style={{
             position: "absolute",
@@ -90,23 +198,25 @@ export const Act1_TheInvisiblePattern: React.FC = () => {
             right: 0,
             height: 2,
             backgroundColor: "#FF3B30",
-            boxShadow: "0 0 16px #FF3B30, 0 0 35px rgba(255, 59, 48, 0.7)",
-            opacity: frame < 870 ? 0.85 : 0.2,
-            zIndex: 10,
+            boxShadow:
+              "0 0 16px #FF3B30, 0 0 35px rgba(255, 59, 48, 0.8), 0 0 60px rgba(255, 59, 48, 0.4)",
+            opacity: frame < 870 ? 0.9 : 0.3,
+            zIndex: 25,
+            pointerEvents: "none",
           }}
         />
 
-        {/* TOP HUD METADATA */}
+        {/* TOP EDITORIAL HUD HEADER */}
         <div
           style={{
             position: "absolute",
-            top: 50,
-            left: 80,
-            right: 80,
+            top: 55,
+            left: 85,
+            right: 85,
             display: "flex",
             justifyContent: "space-between",
             alignItems: "flex-start",
-            zIndex: 20,
+            zIndex: 40,
           }}
         >
           <div>
@@ -117,7 +227,7 @@ export const Act1_TheInvisiblePattern: React.FC = () => {
                 letterSpacing: 3,
                 textTransform: "uppercase",
                 color: "#FF3B30",
-                background: "rgba(255, 59, 48, 0.1)",
+                background: "rgba(255, 59, 48, 0.12)",
                 border: "1px solid rgba(255, 59, 48, 0.35)",
                 padding: "6px 14px",
                 borderRadius: 4,
@@ -132,11 +242,13 @@ export const Act1_TheInvisiblePattern: React.FC = () => {
                 fontFamily: "'Anton', sans-serif",
                 fontSize: 54,
                 lineHeight: 1,
-                color: "#FFF",
+                color: "#FFFFFF",
                 letterSpacing: 1,
+                textTransform: "uppercase",
               }}
             >
-              THE PATTERN WITHIN ARM'S REACH
+              SEEN 10,000 TIMES.{" "}
+              <span style={{ color: "#FF3B30" }}>NEVER LOOKED.</span>
             </div>
           </div>
 
@@ -144,58 +256,94 @@ export const Act1_TheInvisiblePattern: React.FC = () => {
             style={{
               fontFamily: "'Space Mono', monospace",
               fontSize: 12,
-              color: "#6B7280",
+              color: "#718096",
               textAlign: "right",
-              lineHeight: 1.6,
+              lineHeight: 1.8,
             }}
           >
-            SYS: OPTICAL SYMBOLOGY<br />
-            TARGET: UNIVERSAL PRODUCT CODE<br />
-            FREQUENCY: 30 FPS // 1080P
+            SYS: OPTICAL MACHINE CODE<br />
+            FIRST SKETCH: FLORIDA BEACH 1949<br />
+            INERTIA: 25 YEARS UNTOUCHED<br />
+            TARGET: UNIVERSAL PRODUCT CODE
           </div>
         </div>
 
-        {/* SECTION 1: MACRO BARCODE REVEAL (Frames 0 -> 240) */}
+        {/* ----------------------------------------------------------------- */}
+        {/* BEAT 1: THE MONOLITH BARCODE (Frames 0 -> 240)                     */}
+        {/* ----------------------------------------------------------------- */}
         {frame < 250 && (
           <div
             style={{
               display: "flex",
               alignItems: "center",
-              gap: 8,
-              transform: `scale(${linesExpansion})`,
+              gap: 7,
+              transform: `scale(${Math.max(0, barsEntrance)})`,
               background: "#FFFFFF",
-              padding: "36px 48px",
-              borderRadius: 8,
-              boxShadow: "0 30px 80px rgba(0,0,0,0.8), 0 0 40px rgba(255,255,255,0.1)",
+              padding: "32px 50px",
+              borderRadius: 12,
+              boxShadow:
+                "0 30px 90px rgba(0,0,0,0.9), 0 0 60px rgba(255,255,255,0.08)",
+              zIndex: 20,
             }}
           >
             {[
-              4, 8, 16, 4, 24, 8, 4, 32, 12, 4, 16, 8, 28, 4, 12, 6, 20, 8,
-              36, 4, 18, 6, 12, 28, 8, 4, 16, 4,
+              5, 2, 12, 3, 8, 2, 14, 4, 7, 10, 2, 16, 4, 6, 11, 3, 8, 2, 14, 5,
             ].map((w, idx) => (
               <div
                 key={idx}
                 style={{
-                  width: w * 2.2,
-                  height: 420,
+                  width: w * 2.5,
+                  height: 380,
                   backgroundColor: "#000000",
+                  borderRadius: 1,
+                  transform: `scaleY(${interpolate(
+                    frame - idx * 2,
+                    [0, 25],
+                    [0, 1],
+                    {
+                      extrapolateLeft: "clamp",
+                      extrapolateRight: "clamp",
+                    }
+                  )})`,
+                  transformOrigin: "top center",
                 }}
               />
             ))}
           </div>
         )}
 
-        {/* SECTION 2: 10,000 TIMES ACCELERATOR (Frames 240 -> 450) */}
+        {/* ----------------------------------------------------------------- */}
+        {/* BEAT 2: 10,000 TIMES ACCELERATOR (Frames 240 -> 450)              */}
+        {/* ----------------------------------------------------------------- */}
         {frame >= 240 && frame < 450 && (
-          <div style={{ textAlign: "center", zIndex: 15 }}>
+          <div
+            style={{
+              textAlign: "center",
+              transform: `scale(${Math.max(0, counterScale)})`,
+              zIndex: 20,
+            }}
+          >
+            <div
+              style={{
+                fontFamily: "'Space Mono', monospace",
+                fontSize: 16,
+                letterSpacing: 4,
+                color: "#00E5FF",
+                textTransform: "uppercase",
+                marginBottom: 8,
+              }}
+            >
+              HUMAN EXPOSURE FREQUENCY
+            </div>
             <div
               style={{
                 fontFamily: "'Anton', sans-serif",
-                fontSize: 160,
+                fontSize: 180,
                 color: "#FFFFFF",
                 letterSpacing: 4,
-                lineHeight: 1,
-                textShadow: "0 10px 40px rgba(0,0,0,0.9)",
+                lineHeight: 0.9,
+                textShadow:
+                  "0 10px 50px rgba(0,0,0,0.9), 0 0 80px rgba(0, 229, 255, 0.25)",
               }}
             >
               {counterVal.toLocaleString()}
@@ -207,78 +355,170 @@ export const Act1_TheInvisiblePattern: React.FC = () => {
                 fontWeight: 700,
                 color: "#E2B17A",
                 textTransform: "uppercase",
-                letterSpacing: 6,
-                marginTop: 15,
+                letterSpacing: 5,
+                marginTop: 20,
               }}
             >
-              TIMES YOU'VE SEEN THEM. NEVER REALLY LOOKED.
+              TIMES YOU'VE SEEN THEM.{" "}
+              <span
+                style={{
+                  color: "#FF3B30",
+                  borderBottom: "3px solid #FF3B30",
+                  paddingBottom: 2,
+                }}
+              >
+                NEVER REALLY LOOKED.
+              </span>
             </div>
           </div>
         )}
 
-        {/* SECTION 3: FLORIDA BEACH 1949 FLASH (Frames 450 -> 690) */}
+        {/* ----------------------------------------------------------------- */}
+        {/* BEAT 3: FLORIDA BEACH 1949 (Frames 450 -> 690)                     */}
+        {/* ----------------------------------------------------------------- */}
         {frame >= 450 && frame < 690 && (
           <div
             style={{
-              opacity: beachTease,
+              opacity: beachFade,
+              transform: `scale(${Math.max(0, polaroidSpring)})`,
               textAlign: "center",
-              position: "relative",
-              zIndex: 15,
+              zIndex: 20,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
             }}
           >
             <div
               style={{
-                fontFamily: "'Special Elite', monospace",
-                fontSize: 18,
-                color: "#E2B17A",
-                letterSpacing: 4,
-                marginBottom: 12,
+                background: "#FAF7EE",
+                padding: "20px 24px 34px 24px",
+                borderRadius: 8,
+                boxShadow: "0 25px 70px rgba(0,0,0,0.85)",
+                transform: "rotate(-2deg)",
+                width: 680,
+                color: "#1A1A1A",
+                position: "relative",
               }}
             >
-              MIAMI BEACH, FLORIDA // 1949
+              {/* Tape corner */}
+              <div
+                style={{
+                  position: "absolute",
+                  top: -14,
+                  left: 30,
+                  width: 90,
+                  height: 28,
+                  backgroundColor: "rgba(226, 177, 122, 0.45)",
+                  backdropFilter: "blur(4px)",
+                  transform: "rotate(-5deg)",
+                  borderRadius: 2,
+                }}
+              />
+
+              <div
+                style={{
+                  fontFamily: "'Space Mono', monospace",
+                  fontSize: 12,
+                  letterSpacing: 3,
+                  color: "#8C6D1F",
+                  textTransform: "uppercase",
+                  marginBottom: 8,
+                  textAlign: "left",
+                }}
+              >
+                ARCHIVAL WITNESS // MIAMI BEACH 1949
+              </div>
+
+              <div
+                style={{
+                  height: 180,
+                  background:
+                    "radial-gradient(ellipse at 50% 30%, #F5DEB3 0%, #D4A373 70%, #9C6644 100%)",
+                  borderRadius: 4,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 16,
+                  overflow: "hidden",
+                  border: "1px solid rgba(0,0,0,0.15)",
+                }}
+              >
+                {/* 4 Sand Furrows */}
+                {[0, 1, 2, 3].map((i) => (
+                  <div
+                    key={i}
+                    style={{
+                      width: i % 2 === 0 ? 12 : 28,
+                      height: "140%",
+                      backgroundColor: "#4A3525",
+                      boxShadow: "inset 0 0 10px rgba(0,0,0,0.6)",
+                      transform: "rotate(4deg)",
+                    }}
+                  />
+                ))}
+              </div>
+
+              <div
+                style={{
+                  fontFamily: "'Anton', sans-serif",
+                  fontSize: 48,
+                  lineHeight: 1,
+                  marginTop: 18,
+                  color: "#18140E",
+                  textTransform: "uppercase",
+                }}
+              >
+                FIRST SKETCHED IN THE SAND
+              </div>
             </div>
+
             <div
               style={{
-                fontFamily: "'Anton', sans-serif",
-                fontSize: 110,
-                color: "#FFFFFF",
+                fontFamily: "'Space Mono', monospace",
+                fontSize: 16,
+                letterSpacing: 4,
+                color: "#E2B17A",
+                marginTop: 24,
                 textTransform: "uppercase",
-                lineHeight: 0.95,
               }}
             >
-              FIRST SKETCHED<br />
-              <span style={{ color: "#E2B17A" }}>IN THE SAND</span>
+              NORMAN JOSEPH WOODLAND DRAGS HIS FINGERS DOWNWARD
             </div>
           </div>
         )}
 
-        {/* SECTION 4: 25 YEARS OF SILENCE (Frames 690 -> 870) */}
+        {/* ----------------------------------------------------------------- */}
+        {/* BEAT 4: 25 YEARS OF SILENCE (Frames 690 -> 870)                    */}
+        {/* ----------------------------------------------------------------- */}
         {frame >= 690 && frame < 870 && (
           <div
             style={{
               textAlign: "center",
               transform: `scale(${interpolate(frozenProgress, [0, 1], [0.92, 1])})`,
               opacity: frozenProgress,
-              zIndex: 15,
+              zIndex: 20,
             }}
           >
             <div
               style={{
                 fontFamily: "'Space Mono', monospace",
-                fontSize: 18,
+                fontSize: 16,
                 color: "#00E5FF",
                 letterSpacing: 4,
                 marginBottom: 10,
               }}
             >
-              THE INERTIA GAP
+              CHRONOLOGY GAP: {Math.round(timelineProgress)}
             </div>
             <div
               style={{
                 fontFamily: "'Anton', sans-serif",
-                fontSize: 150,
+                fontSize: 170,
                 color: "#FFFFFF",
-                lineHeight: 0.95,
+                lineHeight: 0.9,
+                letterSpacing: 2,
+                textShadow:
+                  "0 15px 50px rgba(0,0,0,0.9), 0 0 70px rgba(0, 229, 255, 0.2)",
               }}
             >
               25 YEARS
@@ -286,104 +526,174 @@ export const Act1_TheInvisiblePattern: React.FC = () => {
             <div
               style={{
                 fontFamily: "'Space Grotesk', sans-serif",
-                fontSize: 30,
+                fontSize: 32,
                 fontWeight: 700,
-                color: "#8C99AF",
-                letterSpacing: 5,
-                marginTop: 15,
+                color: "#9CA3AF",
+                letterSpacing: 4,
+                marginTop: 20,
               }}
             >
-              AND THEN IT DID ABSOLUTELY NOTHING.
+              AND THEN IT DID{" "}
+              <span style={{ color: "#FF3B30" }}>ABSOLUTELY NOTHING.</span>
             </div>
           </div>
         )}
 
-        {/* SECTION 5: $15,000 RIGHTS SOLD (Frames 870 -> 1080) */}
+        {/* ----------------------------------------------------------------- */}
+        {/* BEAT 5: $15,000 RIGHTS SOLD (Frames 870 -> 1080)                   */}
+        {/* ----------------------------------------------------------------- */}
         {frame >= 870 && (
           <div
             style={{
               textAlign: "center",
-              transform: `scale(${Math.max(0, fifteenGrandSpring)})`,
-              zIndex: 15,
+              transform: `scale(${Math.max(0, checkSpring)})`,
+              zIndex: 20,
             }}
           >
             <div
               style={{
-                fontFamily: "'Space Mono', monospace",
-                fontSize: 14,
-                letterSpacing: 3,
-                color: "#FF453A",
-                marginBottom: 8,
+                background: "#11141E",
+                border: "2px solid #E2B17A",
+                borderRadius: 14,
+                padding: "36px 64px",
+                boxShadow:
+                  "0 30px 80px rgba(0,0,0,0.9), 0 0 50px rgba(226, 177, 122, 0.15)",
+                position: "relative",
               }}
             >
-              PATENT VALUATION
-            </div>
-            <div
-              style={{
-                fontFamily: "'Anton', sans-serif",
-                fontSize: 140,
-                color: "#E2B17A",
-                lineHeight: 1,
-              }}
-            >
-              $15,000
-            </div>
-            <div
-              style={{
-                fontFamily: "'Space Grotesk', sans-serif",
-                fontSize: 28,
-                fontWeight: 700,
-                color: "#FFFFFF",
-                marginTop: 15,
-                letterSpacing: 2,
-              }}
-            >
-              SOLD THE RIGHTS AND MOVED ON.
+              {/* Red Surrender Rubber Stamp */}
+              <div
+                style={{
+                  position: "absolute",
+                  top: 25,
+                  right: 35,
+                  border: "3px solid #FF3B30",
+                  color: "#FF3B30",
+                  fontFamily: "'Special Elite', monospace",
+                  fontSize: 26,
+                  fontWeight: 900,
+                  padding: "6px 18px",
+                  borderRadius: 6,
+                  letterSpacing: 3,
+                  transform: `scale(${Math.max(0, stampSpring)}) rotate(-10deg)`,
+                  backgroundColor: "rgba(255, 59, 48, 0.1)",
+                }}
+              >
+                SURRENDERED
+              </div>
+
+              <div
+                style={{
+                  fontFamily: "'Space Mono', monospace",
+                  fontSize: 14,
+                  letterSpacing: 3,
+                  color: "#9CA3AF",
+                  marginBottom: 10,
+                  textTransform: "uppercase",
+                }}
+              >
+                PHILCO ACQUISITION // 1962
+              </div>
+              <div
+                style={{
+                  fontFamily: "'Anton', sans-serif",
+                  fontSize: 150,
+                  color: "#E2B17A",
+                  lineHeight: 1,
+                  letterSpacing: 2,
+                }}
+              >
+                $15,000
+              </div>
+              <div
+                style={{
+                  fontFamily: "'Space Grotesk', sans-serif",
+                  fontSize: 30,
+                  fontWeight: 700,
+                  color: "#FFFFFF",
+                  marginTop: 16,
+                  letterSpacing: 2,
+                }}
+              >
+                SOLD THE RIGHTS AND MOVED ON.
+              </div>
             </div>
           </div>
         )}
 
-        {/* SUBTITLE TELEPROMPTER */}
+        {/* BOTTOM DYNAMIC SUBTITLE TELEPROMPTER */}
         <div
           style={{
             position: "absolute",
-            bottom: 45,
-            left: 80,
-            right: 80,
+            bottom: 40,
+            left: 85,
+            right: 85,
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            background: "rgba(12, 14, 20, 0.75)",
+            background: "rgba(10, 12, 18, 0.82)",
             border: "1px solid rgba(255, 255, 255, 0.08)",
-            padding: "14px 24px",
-            borderRadius: 6,
-            backdropFilter: "blur(8px)",
+            padding: "16px 28px",
+            borderRadius: 8,
+            backdropFilter: "blur(12px)",
+            zIndex: 40,
           }}
         >
           <div
             style={{
               fontFamily: "'Space Grotesk', sans-serif",
-              fontSize: 18,
-              color: "#E5E7EB",
-              fontWeight: 500,
+              fontSize: 20,
+              color: "#F3F4F6",
+              fontWeight: 600,
             }}
           >
-            {frame < 240 && "Somewhere within arm's reach there's a pattern of black lines..."}
-            {frame >= 240 && frame < 450 && "You've seen them 10,000 times, you've never really looked."}
-            {frame >= 450 && frame < 690 && "That pattern was first sketched in the sand of a Florida beach in 1949."}
-            {frame >= 690 && frame < 870 && "And then it did absolutely nothing for 25 years."}
-            {frame >= 870 && "Its inventors sold the rights for $15,000 and moved on."}
+            {frame < 240 && (
+              <span>
+                Look around you. Somewhere within arm's reach, there's a{" "}
+                <b style={{ color: "#00E5FF" }}>pattern of black lines</b>.
+              </span>
+            )}
+            {frame >= 240 && frame < 450 && (
+              <span>
+                You've seen them <b style={{ color: "#E2B17A" }}>10,000 times</b>.
+                You've <b style={{ color: "#FF3B30" }}>never really looked</b>.
+              </span>
+            )}
+            {frame >= 450 && frame < 690 && (
+              <span>
+                That pattern was first sketched in the sand of a{" "}
+                <b style={{ color: "#E2B17A" }}>Florida beach in 1949</b>.
+              </span>
+            )}
+            {frame >= 690 && frame < 870 && (
+              <span>
+                And then it did{" "}
+                <b style={{ color: "#00E5FF" }}>absolutely nothing</b> for{" "}
+                <b style={{ color: "#FFFFFF" }}>25 years</b>.
+              </span>
+            )}
+            {frame >= 870 && (
+              <span>
+                Its inventors sold the rights for{" "}
+                <b style={{ color: "#E2B17A" }}>$15,000</b> and moved on.
+              </span>
+            )}
           </div>
+
           <div
             style={{
               fontFamily: "'Space Mono', monospace",
-              fontSize: 11,
+              fontSize: 12,
               color: "#6B7280",
             }}
           >
-            FRAME {frame} / 1080
+            SEGMENT 01 • FRAME {frame} / 1080 (
+            {(frame / 30).toFixed(1)}s)
           </div>
         </div>
+
+        {/* Global 35mm Analog Film Grain Overlay */}
+        <GrainOverlay />
       </AbsoluteFill>
     </CameraRig>
   );

@@ -16,9 +16,9 @@ export const MainVideo: React.FC = () => {
 
       {/* Frame-Accurate Act Sequences (Total: 6,540 frames = 3m 38s @ 30fps) */}
       <Series>
-        {/* Act 1: 00:00.00 -> 00:36.74 (1102 frames) */}
-        <Series.Sequence durationInFrames={1102}>
-          <Act1_TheInvisiblePattern />
+        {/* Act 1: 00:00.00 -> 00:36.00 (1080 frames) */}
+        <Series.Sequence durationInFrames={1080}>
+          <Act1_TheInvisiblePattern includeAudio={false} />
         </Series.Sequence>
 
         {/* Act 2: 00:36.74 -> 01:08.67 (958 frames) */}

@@ -21,14 +21,32 @@ export const RemotionRoot: React.FC = () => {
         height={1080}
       />
 
+      {/* ---------------------------------------------------- */}
+      {/* 12 Modular 7-Minute Segments (~30-40s Each)          */}
+      {/* ---------------------------------------------------- */}
+      <Composition
+        id="Segment01"
+        component={Act1_TheInvisiblePattern}
+        durationInFrames={1080}
+        fps={30}
+        width={1920}
+        height={1080}
+        defaultProps={{
+          includeAudio: true,
+        }}
+      />
+
       {/* Individual Act Preview Compositions for Fast Debugging */}
       <Composition
         id="Act1-TheInvisiblePattern"
         component={Act1_TheInvisiblePattern}
-        durationInFrames={1102}
+        durationInFrames={1080}
         fps={30}
         width={1920}
         height={1080}
+        defaultProps={{
+          includeAudio: true,
+        }}
       />
       <Composition
         id="Act2-DrexelHallway"
