@@ -1,14 +1,14 @@
 import React from 'react';
 import { Composition } from 'remotion';
-import { Segment01, SEGMENT_01_DURATION } from './segments/Segment01';
-import { THEME, GLOBAL_STYLES } from './theme';
+import { Segment01, SEGMENT_01_DURATION } from './Segment01';
+import { THEME, GLOBAL_CSS } from './theme';
 
 export const Root: React.FC = () => {
   return (
     <>
-      <style>{GLOBAL_STYLES}</style>
+      <style>{GLOBAL_CSS}</style>
 
-      {/* Segment 01 Composition: 0:00 - 0:32 (32s @ 30fps = 960 frames) */}
+      {/* Segment 01 Composition: 0:00 - 0:32 (32.0s @ 30fps = 960 frames) */}
       <Composition
         id="Segment01"
         component={Segment01}
@@ -18,7 +18,7 @@ export const Root: React.FC = () => {
         height={THEME.dimensions.height}
       />
 
-      {/* Master Video Composition (will contain all 14 segments chained) */}
+      {/* Master Video Composition */}
       <Composition
         id="MasterVideo"
         component={Segment01}
