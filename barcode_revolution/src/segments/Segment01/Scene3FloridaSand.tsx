@@ -4,6 +4,8 @@ import {
   interpolate,
   spring,
   useVideoConfig,
+  Img,
+  staticFile,
 } from 'remotion';
 import { THEME } from '../../theme';
 import { CameraRig } from '../../components/CameraRig';
@@ -14,40 +16,33 @@ export const Scene3FloridaSand: React.FC = () => {
   const { fps } = useVideoConfig();
 
   // 210 frames total (0:13 to 0:20)
-  // Phase 1: 0 - 45 frames: Warm beach transition & archival GPS postmark
-  // Phase 2: 45 - 165 frames: Hand drags four fingers through sand carving trenches
-  // Phase 3: 165 - 210 frames: Morse code bars alignment & ancestor revelation
+  // Phase 1: 0 - 50 frames: Transition to 1949 Florida Beach Kodachrome Photo
+  // Phase 2: 50 - 150 frames: 2.5D Camera drift over the four finger-carved furrows in sand
+  // Phase 3: 150 - 210 frames: Morse Code (• — • —) to Barcode transformation badges
 
-  const transitionFade = interpolate(frame, [0, 20], [0, 1], {
+  const transitionFade = interpolate(frame, [0, 24], [0, 1], {
     extrapolateRight: 'clamp',
   });
 
-  // Furrow carving motion
-  const carveSpring = spring({
-    frame: frame - 35,
-    fps,
-    config: { damping: 22, mass: 1.4, stiffness: 55 },
-  });
-
-  const furrowLength = interpolate(carveSpring, [0, 1], [0, 680]);
-
-  // Hand position tracking the head of the furrows
-  const handY = 180 + furrowLength;
-
   // Stamp appearance
   const stampSpring = spring({
-    frame: frame - 15,
+    frame: frame - 20,
     fps,
-    config: { damping: 14, mass: 0.6, stiffness: 120 },
+    config: { damping: 14, mass: 0.7, stiffness: 110 },
   });
 
-  // Four furrows representing Morse Code dots and dashes:
-  // Dot (thin: 10px), Dash (thick: 36px), Dot (thin: 12px), Dash (thick: 42px)
+  // Morse code badges appearance (Frame 145+)
+  const badgesSpring = spring({
+    frame: frame - 145,
+    fps,
+    config: { damping: 15, mass: 0.8, stiffness: 95 },
+  });
+
   const furrows = [
-    { x: 740, width: 12, label: 'DOT (•)', code: '1X' },
-    { x: 840, width: 38, label: 'DASH (—)', code: '3X' },
-    { x: 960, width: 14, label: 'DOT (•)', code: '1X' },
-    { x: 1080, width: 44, label: 'DASH (—)', code: '3X' },
+    { label: 'DOT (•)', code: '1X THIN', desc: '0.33mm' },
+    { label: 'DASH (—)', code: '3X THICK', desc: '0.99mm' },
+    { label: 'DOT (•)', code: '1X THIN', desc: '0.33mm' },
+    { label: 'DASH (—)', code: '3X THICK', desc: '0.99mm' },
   ];
 
   return (
@@ -55,156 +50,48 @@ export const Scene3FloridaSand: React.FC = () => {
       style={{
         position: 'absolute',
         inset: 0,
-        backgroundColor: '#1c150c',
+        backgroundColor: '#151009',
         overflow: 'hidden',
         opacity: transitionFade,
       }}
     >
       <CameraRig
         durationInFrames={210}
-        zoom={[1, 1.08]}
-        panX={[0, -20]}
-        panY={[0, 15]}
-        driftIntensity={0.6}
+        zoom={[1, 1.12]}
+        panX={[0, -25]}
+        panY={[0, -15]}
+        driftIntensity={0.65}
       >
-        <DustParticles count={35} color="rgba(255, 230, 180, 0.4)" />
-
-        {/* Ambient Warm Golden Hour Sun Flare */}
-        <div
-          style={{
-            position: 'absolute',
-            top: -200,
-            right: -200,
-            width: 900,
-            height: 900,
-            borderRadius: '50%',
-            background:
-              'radial-gradient(circle, rgba(255, 200, 110, 0.28) 0%, rgba(201, 166, 107, 0.1) 50%, transparent 75%)',
-            pointerEvents: 'none',
-          }}
-        />
+        <DustParticles count={40} color="rgba(255, 230, 180, 0.45)" />
 
         {/* ======================================================== */}
-        {/* TACTILE BEACH SAND CANVAS                                */}
+        {/* ARCHIVAL KODACHROME PHOTOGRAPH OF 1949 MIAMI BEACH SAND  */}
         {/* ======================================================== */}
-        <svg width="1920" height="1080" viewBox="0 0 1920 1080" fill="none">
-          <defs>
-            {/* Granular wet sand texture */}
-            <filter id="beach-sand">
-              <feTurbulence
-                type="fractalNoise"
-                baseFrequency="0.65"
-                numOctaves="4"
-                result="sandNoise"
-              />
-              <feColorMatrix
-                type="matrix"
-                values="0.25 0 0 0 0.82
-                        0 0.22 0 0 0.68
-                        0 0 0.16 0 0.44
-                        0 0 0 1 0"
-              />
-              <feBlend mode="multiply" in="SourceGraphic" result="sandBlend" />
-            </filter>
-
-            {/* Trench deep shadow gradient */}
-            <linearGradient id="trench-depth" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor="#3b250d" stopOpacity="0.95" />
-              <stop offset="30%" stopColor="#1e1104" stopOpacity="1" />
-              <stop offset="70%" stopColor="#1e1104" stopOpacity="1" />
-              <stop offset="100%" stopColor="#3b250d" stopOpacity="0.9" />
-            </linearGradient>
-
-            {/* Specular damp wet sand reflection inside trenches */}
-            <linearGradient id="wet-reflect" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#ffffff" stopOpacity="0.35" />
-              <stop offset="100%" stopColor="#ffffff" stopOpacity="0.05" />
-            </linearGradient>
-          </defs>
-
-          {/* Wet Sand Base */}
-          <rect
-            width="1920"
-            height="1080"
-            fill={THEME.colors.sand}
-            filter="url(#beach-sand)"
+        <div style={{ position: 'absolute', inset: 0 }}>
+          <Img
+            src={staticFile('assets/florida_beach_1949.jpg')}
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              filter: 'sepia(0.2) contrast(1.08) brightness(0.95)',
+            }}
           />
 
-          {/* Ocean Wave Wash Foam in Upper Left Corner */}
-          <g opacity="0.45">
-            <path
-              d="M-50 140 Q400 180 960 130 T1980 160"
-              stroke="#ffffff"
-              strokeWidth="12"
-              fill="none"
-              filter="blur(3px)"
-            />
-            <path
-              d="M-50 145 Q400 185 960 135 T1980 165"
-              stroke="#e8f4f8"
-              strokeWidth="4"
-              fill="none"
-            />
-          </g>
-
-          {/* The Four Furrows Carved by Woodland's Fingers */}
-          {furrows.map((f, i) => (
-            <g key={i}>
-              {/* Outer raised displaced sand ridge highlight */}
-              <rect
-                x={f.x - f.width / 2 - 8}
-                y={180}
-                width={f.width + 16}
-                height={furrowLength}
-                rx={f.width / 2 + 4}
-                fill="#fcedd7"
-                opacity="0.65"
-                filter="blur(2px)"
-              />
-              {/* Deep carved dark trench shadow */}
-              <rect
-                x={f.x - f.width / 2}
-                y={180}
-                width={f.width}
-                height={furrowLength}
-                rx={f.width / 2}
-                fill="url(#trench-depth)"
-              />
-              {/* Wet glistening specular highlight inside trench */}
-              <line
-                x1={f.x - f.width / 4}
-                y1={180}
-                x2={f.x - f.width / 4}
-                y2={180 + furrowLength}
-                stroke="url(#wet-reflect)"
-                strokeWidth={Math.max(2, f.width / 6)}
-                strokeLinecap="round"
-              />
-            </g>
-          ))}
-
-          {/* Hand Silhouette Drawing in Sand (Visible during carving) */}
-          {frame >= 35 && frame <= 170 && (
-            <g transform={`translate(910, ${handY})`}>
-              {/* Soft hand shadow on sand */}
-              <ellipse cx="0" cy="40" rx="220" ry="60" fill="rgba(30, 17, 4, 0.45)" filter="blur(14px)" />
-              {/* Stylized Four Fingers Tip Silhouette */}
-              {[-170, -70, 50, 170].map((fingerX, fi) => (
-                <circle
-                  key={fi}
-                  cx={fingerX}
-                  cy="0"
-                  r="14"
-                  fill="#452a12"
-                  opacity="0.85"
-                />
-              ))}
-            </g>
-          )}
-        </svg>
+          {/* Golden Hour Coastal Vignette & Sun Glint Overlay */}
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background:
+                'radial-gradient(ellipse at 70% 30%, rgba(255, 200, 100, 0.25) 0%, transparent 60%), radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(20, 14, 7, 0.75) 100%)',
+              pointerEvents: 'none',
+            }}
+          />
+        </div>
 
         {/* ======================================================== */}
-        {/* ARCHIVAL VINTAGE POSTMARK & HISTORICAL CONTEXT           */}
+        {/* ARCHIVAL POSTAL RECORD & HISTORICAL GEOLOCATION STAMP   */}
         {/* ======================================================== */}
         <div
           style={{
@@ -216,31 +103,35 @@ export const Scene3FloridaSand: React.FC = () => {
             gap: 12,
             opacity: stampSpring,
             transform: `scale(${0.9 + stampSpring * 0.1})`,
+            zIndex: 20,
           }}
         >
-          {/* Postmark Circular Stamp */}
+          {/* Circular Postal Postmark Seal */}
           <div
             style={{
-              width: 140,
-              height: 140,
+              width: 150,
+              height: 150,
               borderRadius: '50%',
-              border: '3px dashed #402812',
+              border: '3px dashed #fff2d9',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'center',
               alignItems: 'center',
-              color: '#402812',
-              transform: 'rotate(-12deg)',
+              color: '#fff2d9',
+              transform: 'rotate(-10deg)',
+              backgroundColor: 'rgba(28, 18, 9, 0.65)',
+              backdropFilter: 'blur(8px)',
+              boxShadow: '0 10px 30px rgba(0,0,0,0.6)',
             }}
           >
-            <div style={{ fontFamily: THEME.fonts.mono, fontSize: 10, letterSpacing: '0.15em', fontWeight: 700 }}>
+            <div style={{ fontFamily: THEME.fonts.mono, fontSize: 10, letterSpacing: '0.2em', fontWeight: 700 }}>
               POSTAL RECORD
             </div>
-            <div style={{ fontFamily: THEME.fonts.story, fontSize: 18, fontWeight: 700, margin: '4px 0' }}>
+            <div style={{ fontFamily: THEME.fonts.story, fontSize: 19, fontWeight: 700, margin: '4px 0' }}>
               MIAMI BEACH
             </div>
-            <div style={{ fontFamily: THEME.fonts.mono, fontSize: 12, fontWeight: 700 }}>
-              DEC 1949
+            <div style={{ fontFamily: THEME.fonts.mono, fontSize: 13, fontWeight: 700, color: THEME.colors.amber }}>
+              WINTER 1949
             </div>
           </div>
 
@@ -248,12 +139,17 @@ export const Scene3FloridaSand: React.FC = () => {
             style={{
               fontFamily: THEME.fonts.mono,
               fontSize: 13,
-              color: '#38220f',
+              color: '#fff5e0',
               letterSpacing: '0.15em',
               fontWeight: 600,
+              backgroundColor: 'rgba(15, 10, 5, 0.75)',
+              padding: '8px 14px',
+              borderRadius: 6,
+              backdropFilter: 'blur(6px)',
+              lineHeight: 1.6,
             }}
           >
-            COORDINATES: 25.7907° N, 80.1300° W
+            GEOLOCATION: 25.7907° N, 80.1300° W
             <br />
             INVENTOR: NORMAN JOSEPH WOODLAND
           </div>
@@ -264,19 +160,21 @@ export const Scene3FloridaSand: React.FC = () => {
           style={{
             position: 'absolute',
             top: 60,
-            right: 110,
+            right: 100,
             textAlign: 'right',
             opacity: stampSpring,
+            zIndex: 20,
           }}
         >
           <div
             style={{
               fontFamily: THEME.fonts.story,
-              fontSize: 115,
+              fontSize: 120,
               fontWeight: 800,
-              color: '#261608',
+              color: '#ffffff',
               letterSpacing: '-0.04em',
               lineHeight: 0.9,
+              textShadow: '0 4px 30px rgba(0,0,0,0.9), 0 0 40px rgba(245, 184, 74, 0.4)',
             }}
           >
             1949
@@ -285,11 +183,12 @@ export const Scene3FloridaSand: React.FC = () => {
             style={{
               fontFamily: THEME.fonts.mono,
               fontSize: 14,
-              letterSpacing: '0.3em',
-              color: '#4a2d12',
+              letterSpacing: '0.35em',
+              color: THEME.colors.amber,
               textTransform: 'uppercase',
               marginTop: 10,
               fontWeight: 700,
+              textShadow: '0 2px 10px rgba(0,0,0,0.9)',
             }}
           >
             The Sand Revelation
@@ -297,9 +196,9 @@ export const Scene3FloridaSand: React.FC = () => {
         </div>
 
         {/* ======================================================== */}
-        {/* MORSE CODE TO BARS ANNOTATION (Frame 160+)                */}
+        {/* MORSE CODE TO BARCODE TRANSFORMATION BADGES (Frame 145+) */}
         {/* ======================================================== */}
-        {frame >= 155 && (
+        {frame >= 140 && (
           <div
             style={{
               position: 'absolute',
@@ -309,29 +208,32 @@ export const Scene3FloridaSand: React.FC = () => {
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
-              gap: 40,
-              opacity: interpolate(frame, [155, 175], [0, 1]),
+              gap: 32,
+              opacity: badgesSpring,
+              transform: `translateY(${(1 - badgesSpring) * 30}px)`,
+              zIndex: 30,
             }}
           >
             {furrows.map((f, i) => (
               <div
                 key={i}
                 style={{
-                  width: 140,
-                  backgroundColor: 'rgba(28, 18, 9, 0.85)',
-                  border: '1px solid rgba(252, 237, 215, 0.4)',
-                  padding: '10px 16px',
-                  borderRadius: 6,
+                  width: 170,
+                  backgroundColor: 'rgba(15, 11, 7, 0.92)',
+                  border: `1px solid ${i % 2 === 1 ? THEME.colors.amber : 'rgba(255, 240, 215, 0.4)'}`,
+                  padding: '14px 18px',
+                  borderRadius: 8,
                   textAlign: 'center',
-                  boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
+                  boxShadow: '0 15px 40px rgba(0,0,0,0.85)',
+                  backdropFilter: 'blur(10px)',
                 }}
               >
                 <div
                   style={{
                     fontFamily: THEME.fonts.mono,
-                    fontSize: 16,
-                    fontWeight: 700,
-                    color: THEME.colors.amber,
+                    fontSize: 18,
+                    fontWeight: 800,
+                    color: i % 2 === 1 ? THEME.colors.amber : THEME.colors.boneWhite,
                   }}
                 >
                   {f.label}
@@ -339,12 +241,23 @@ export const Scene3FloridaSand: React.FC = () => {
                 <div
                   style={{
                     fontFamily: THEME.fonts.mono,
-                    fontSize: 11,
-                    color: THEME.colors.boneWhite,
-                    marginTop: 4,
+                    fontSize: 12,
+                    color: THEME.colors.sand,
+                    marginTop: 6,
+                    fontWeight: 700,
                   }}
                 >
-                  WIDTH: {f.code}
+                  {f.code}
+                </div>
+                <div
+                  style={{
+                    fontFamily: THEME.fonts.mono,
+                    fontSize: 10,
+                    color: '#998f80',
+                    marginTop: 2,
+                  }}
+                >
+                  {f.desc}
                 </div>
               </div>
             ))}
