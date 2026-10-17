@@ -1,31 +1,17 @@
-import React from 'react';
-import { Composition } from 'remotion';
-import { Segment01, SEGMENT_01_DURATION } from './Segment01';
-import { THEME, GLOBAL_CSS } from './theme';
+import React from "react";
+import { Composition } from "remotion";
+import { Segment01 } from "./Segment01/Segment01";
 
 export const Root: React.FC = () => {
   return (
     <>
-      <style>{GLOBAL_CSS}</style>
-
-      {/* Segment 01 Composition: 0:00 - 0:32 (32.0s @ 30fps = 960 frames) */}
       <Composition
         id="Segment01"
         component={Segment01}
-        durationInFrames={SEGMENT_01_DURATION}
-        fps={THEME.fps}
-        width={THEME.dimensions.width}
-        height={THEME.dimensions.height}
-      />
-
-      {/* Master Video Composition */}
-      <Composition
-        id="MasterVideo"
-        component={Segment01}
-        durationInFrames={SEGMENT_01_DURATION}
-        fps={THEME.fps}
-        width={THEME.dimensions.width}
-        height={THEME.dimensions.height}
+        durationInFrames={960}
+        fps={30}
+        width={1920}
+        height={1080}
       />
     </>
   );
