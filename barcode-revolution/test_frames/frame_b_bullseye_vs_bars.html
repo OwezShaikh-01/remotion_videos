@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Anton&family=Permanent+Marker&family=Special+Elite&family=Space+Grotesk:wght@700;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1920px;
+    height: 1080px;
+    background: #09090C;
+    color: #F4EFE6;
+    font-family: 'Space Grotesk', sans-serif;
+    overflow: hidden;
+    position: relative;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Split Background: Industrial Dark Metal to Bleached Pressroom Paper */
+  .bg-industrial {
+    position: absolute;
+    inset: 0;
+    background: 
+      radial-gradient(circle at 25% 40%, #151822 0%, #06070A 80%);
+  }
+
+  /* Diagonal Cut: Right side is an angled sheet of newsprint paper */
+  .paper-slash {
+    position: absolute;
+    top: -100px;
+    bottom: -100px;
+    right: -100px;
+    width: 1050px;
+    background: #EDE8DE;
+    transform: rotate(-10deg);
+    box-shadow: -30px 0 80px rgba(0, 0, 0, 0.85);
+    border-left: 3px solid #D5CEBE;
+  }
+
+  /* Half-tone dot texture on paper */
+  .halftone-screen {
+    position: absolute;
+    inset: 0;
+    opacity: 0.08;
+    background-image: radial-gradient(#111 1.5px, transparent 1.5px);
+    background-size: 8px 8px;
+  }
+
+  /* 35mm Gritty Film Grain Overlay */
+  .film-grain {
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23grain)' opacity='0.08'/%3E%3C/svg%3E");
+    pointer-events: none;
+    mix-blend-mode: overlay;
+  }
+
+  /* Aggressive Editorial Headline */
+  .headline-banner {
+    position: absolute;
+    top: 50px;
+    left: 80px;
+    z-index: 30;
+  }
+
+  .kicker-tag {
+    font-family: 'Special Elite', monospace;
+    font-size: 14px;
+    color: #FF3344;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    background: rgba(255, 51, 68, 0.15);
+    border: 1px solid rgba(255, 51, 68, 0.4);
+    padding: 6px 14px;
+    display: inline-block;
+    margin-bottom: 12px;
+  }
+
+  .main-title {
+    font-family: 'Anton', sans-serif;
+    font-size: 88px;
+    line-height: 0.92;
+    text-transform: uppercase;
+    color: #FFFFFF;
+    letter-spacing: -1px;
+    text-shadow: 0 10px 40px rgba(0,0,0,0.9);
+  }
+  .main-title em {
+    color: #FF2A4B;
+    font-style: normal;
+  }
+
+  /* LEFT SIDE: The Smeared Bullseye Disaster */
+  .bullseye-disaster-zone {
+    position: absolute;
+    top: 260px;
+    left: 80px;
+    width: 780px;
+    height: 600px;
+    z-index: 20;
+  }
+
+  .section-eyebrow {
+    font-family: 'Special Elite', monospace;
+    font-size: 16px;
+    color: #8E9BAE;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+  }
+
+  /* Giant Distorted Smeared Bullseye SVG */
+  .bullseye-canvas {
+    position: relative;
+    width: 520px;
+    height: 440px;
+  }
+
+  /* Lateral Ink Smear Streaks */
+  .ink-smear-trail {
+    position: absolute;
+    top: 60px;
+    left: 200px;
+    width: 450px;
+    height: 280px;
+    background: linear-gradient(90deg, rgba(230, 230, 230, 0.8) 0%, rgba(200, 200, 200, 0.4) 30%, transparent 100%);
+    filter: blur(8px);
+    transform: skewX(-20deg);
+    opacity: 0.7;
+    z-index: 1;
+  }
+
+  /* Stamped Red Ink Mark of Failure */
+  .stamped-rejection {
+    position: absolute;
+    top: 140px;
+    left: 220px;
+    border: 6px solid #FF1E44;
+    color: #FF1E44;
+    font-family: 'Anton', sans-serif;
+    font-size: 58px;
+    letter-spacing: 4px;
+    padding: 10px 28px;
+    text-transform: uppercase;
+    transform: rotate(-16deg);
+    box-shadow: 0 0 40px rgba(255, 30, 68, 0.4);
+    background: rgba(10, 10, 15, 0.85);
+    z-index: 25;
+    text-shadow: 0 0 15px rgba(255, 30, 68, 0.6);
+  }
+
+  /* Hand-drawn grease pencil comment */
+  .grease-circle-note {
+    position: absolute;
+    bottom: 20px;
+    left: 40px;
+    font-family: 'Permanent Marker', cursive;
+    color: #FF3344;
+    font-size: 24px;
+    transform: rotate(3deg);
+    z-index: 30;
+    max-width: 440px;
+    line-height: 1.2;
+  }
+
+  /* RIGHT SIDE: The Clean Rectilinear IBM Solution */
+  .bars-solution-zone {
+    position: absolute;
+    top: 220px;
+    right: 80px;
+    width: 780px;
+    height: 720px;
+    z-index: 25;
+    color: #111;
+  }
+
+  .solution-eyebrow {
+    font-family: 'Special Elite', monospace;
+    font-size: 16px;
+    color: #1A7F56;
+    letter-spacing: 2px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    text-align: right;
+  }
+
+  /* Massive Razor-Sharp UPC Bars on Paper */
+  .crisp-barcode-mount {
+    position: relative;
+    background: #FFFFFF;
+    padding: 40px 50px;
+    border-radius: 4px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+    border: 1px solid #C5BEAE;
+    transform: rotate(3deg);
+    margin-left: 100px;
+  }
+
+  /* Translucent Yellow Masking Tape */
+  .tape-mount {
+    position: absolute;
+    top: -16px;
+    right: 60px;
+    width: 140px;
+    height: 36px;
+    background: rgba(235, 205, 110, 0.65);
+    transform: rotate(6deg);
+    border-left: 2px dashed rgba(255,255,255,0.4);
+    border-right: 2px dashed rgba(255,255,255,0.4);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  }
+
+  /* The actual heavy black ink bars */
+  .upc-ink-cluster {
+    display: flex;
+    align-items: center;
+    gap: 4.5px;
+    height: 260px;
+    justify-content: center;
+  }
+
+  /* Green Grease Pencil Checkmark */
+  .green-check {
+    position: absolute;
+    bottom: -30px;
+    right: -20px;
+    font-family: 'Permanent Marker', cursive;
+    color: #0E9F6E;
+    font-size: 80px;
+    transform: rotate(-10deg);
+    text-shadow: 0 4px 15px rgba(0,0,0,0.15);
+  }
+
+  .solution-annotation {
+    font-family: 'Special Elite', monospace;
+    font-size: 15px;
+    color: #2D3748;
+    line-height: 1.6;
+    margin-top: 50px;
+    margin-left: 100px;
+    max-width: 520px;
+    background: rgba(255,255,255,0.7);
+    padding: 18px 24px;
+    border-left: 4px solid #0E9F6E;
+    border-radius: 2px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  }
+
+  .solution-annotation strong {
+    color: #000;
+    font-size: 17px;
+    display: block;
+    margin-bottom: 6px;
+  }
+</style>
+</head>
+<body>
+  <div class="bg-industrial"></div>
+  <div class="paper-slash">
+    <div class="halftone-screen"></div>
+  </div>
+  <div class="film-grain"></div>
+
+  <!-- Editorial Headline -->
+  <div class="headline-banner">
+    <div class="kicker-tag">1971 SYMBOL COMMITTEE // THE FATAL DEFECT</div>
+    <div class="main-title">
+      THE WINNING DESIGN<br>
+      ALMOST LOST TO <em>A CIRCLE.</em>
+    </div>
+  </div>
+
+  <!-- LEFT: Smeared Bullseye Disaster -->
+  <div class="bullseye-disaster-zone">
+    <div class="section-eyebrow">PROPOSAL: RCA CONCENTRIC BULLSEYE</div>
+
+    <div class="bullseye-canvas">
+      <!-- Smear ink bleed trails -->
+      <div class="ink-smear-trail"></div>
+
+      <!-- Smeared distorted bullseye rings -->
+      <svg width="420" height="420" viewBox="0 0 200 200" style="position: relative; z-index: 5;">
+        <defs>
+          <filter id="brutal-smear" x="-40%" y="-40%" width="200%" height="200%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="6 0.8" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" opacity="0.7"/>
+            </feMerge>
+          </filter>
+        </defs>
+        <circle cx="90" cy="100" r="85" fill="#E8EDF5" filter="url(#brutal-smear)" />
+        <circle cx="90" cy="100" r="74" fill="#09090C" />
+        <circle cx="90" cy="100" r="62" fill="#E8EDF5" filter="url(#brutal-smear)" />
+        <circle cx="90" cy="100" r="48" fill="#09090C" />
+        <circle cx="90" cy="100" r="38" fill="#E8EDF5" filter="url(#brutal-smear)" />
+        <circle cx="90" cy="100" r="24" fill="#09090C" />
+        <circle cx="90" cy="100" r="14" fill="#E8EDF5" filter="url(#brutal-smear)" />
+      </svg>
+
+      <!-- Stamped Rejection -->
+      <div class="stamped-rejection">
+        FATAL INK SMEAR!
+      </div>
+    </div>
+
+    <div class="grease-circle-note">
+      "It sounds perfect until you print it. On rotary presses, curves bleed sideways into each other!"
+    </div>
+  </div>
+
+  <!-- RIGHT: Razor-Sharp IBM Solution -->
+  <div class="bars-solution-zone">
+    <div class="solution-eyebrow">WINNER: IBM LAURER RECTILINEAR (UPC)</div>
+
+    <div class="crisp-barcode-mount">
+      <div class="tape-mount"></div>
+
+      <!-- Solid Pitch Black Ink Bars -->
+      <div class="upc-ink-cluster">
+        <!-- Guard 1 -->
+        <div style="width: 7px; height: 240px; background: #000;"></div>
+        <div style="width: 7px; height: 240px;"></div>
+        <div style="width: 7px; height: 240px; background: #000;"></div>
+        <div style="width: 18px; height: 240px;"></div>
+
+        <!-- Left Numbers -->
+        <div style="width: 22px; height: 210px; background: #000;"></div>
+        <div style="width: 12px; height: 210px;"></div>
+        <div style="width: 32px; height: 210px; background: #000;"></div>
+        <div style="width: 16px; height: 210px;"></div>
+        <div style="width: 9px; height: 210px; background: #000;"></div>
+        <div style="width: 24px; height: 210px;"></div>
+        <div style="width: 38px; height: 210px; background: #000;"></div>
+        <div style="width: 12px; height: 210px;"></div>
+
+        <!-- Center Guard -->
+        <div style="width: 7px; height: 240px; background: #000;"></div>
+        <div style="width: 7px; height: 240px;"></div>
+        <div style="width: 7px; height: 240px; background: #000;"></div>
+        <div style="width: 18px; height: 240px;"></div>
+
+        <!-- Right Numbers -->
+        <div style="width: 26px; height: 210px; background: #000;"></div>
+        <div style="width: 14px; height: 210px;"></div>
+        <div style="width: 16px; height: 210px; background: #000;"></div>
+        <div style="width: 22px; height: 210px;"></div>
+        <div style="width: 42px; height: 210px; background: #000;"></div>
+        <div style="width: 9px; height: 210px;"></div>
+
+        <!-- Right Guard -->
+        <div style="width: 7px; height: 240px; background: #000;"></div>
+        <div style="width: 7px; height: 240px;"></div>
+        <div style="width: 7px; height: 240px; background: #000;"></div>
+      </div>
+
+      <div class="green-check">✓</div>
+    </div>
+
+    <div class="solution-annotation">
+      <strong>GEORGE LAURER REFUSED HIS BOSS'S ORDER:</strong>
+      "His own manager told him to stick with the bullseye. Laurer refused. Straight bars run parallel to the paper roll — ink bleeds along the bar, never across the gap."
+    </div>
+  </div>
+</body>
+</html>
