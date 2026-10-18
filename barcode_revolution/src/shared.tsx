@@ -6,6 +6,8 @@ import {C, F, W, H, prog, rnd, Sentence, Word} from './lib';
 const OV: Record<string, number> = {
   '10,000': 3, '$15,000': 6, '1948': 5, '1949': 5, '25': 3, philadelphia: 5, video: 3, every: 2, mistakes: 2, everywhere: 3,
   theres: 1, youll: 1, real: 1, scanned: 1, drexel: 2, institute: 3, technology: 4, supposedly: 4, overheard: 3,
+  nobody: 3, really: 2, sitting: 2, shelves: 1, dean: 1, automatically: 6, graduate: 3, bernard: 2, silver: 2,
+  standing: 2, enough: 2, woodland: 2, norman: 2, joseph: 2, ultraviolet: 5, doesnt: 2,
 };
 const syl = (w: string) => {
   const k = w.toLowerCase().replace(/[^a-z0-9$,]/g, '').replace(/,$/, '');

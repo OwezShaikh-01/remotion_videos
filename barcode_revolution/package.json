@@ -9,6 +9,7 @@
     "build": "remotion bundle src/index.ts",
     "render:seg01": "remotion render src/index.ts Segment01 out/segment-01.mp4 --codec=h264 --crf=18 --image-format=jpeg --jpeg-quality=95",
     "render:seg02": "remotion render src/index.ts Segment02 out/segment-02.mp4 --codec=h264 --crf=18 --image-format=jpeg --jpeg-quality=95",
+    "render:seg03": "remotion render src/index.ts Segment03 out/segment-03.mp4 --codec=h264 --crf=18 --image-format=jpeg --jpeg-quality=95",
     "render:1": "remotion render src/index.ts Segment01 out/segment-01.mp4 --codec=h264 --crf=18 --image-format=jpeg --jpeg-quality=95"
   },
   "dependencies": {
