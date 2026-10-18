@@ -5,9 +5,11 @@
   "description": "High-End Documentary Motion Graphics - The Barcode Story",
   "scripts": {
     "start": "remotion preview src/index.ts",
+    "studio": "remotion studio src/index.ts",
     "build": "remotion bundle src/index.ts",
-    "render:1": "remotion render src/index.ts Segment01 out/segment_1.mp4 --gl=angle",
-    "render:all": "remotion render src/index.ts MasterVideo out/barcode_revolution_full.mp4 --gl=angle"
+    "render:seg01": "remotion render src/index.ts Segment01 out/segment-01.mp4 --codec=h264 --crf=18 --image-format=jpeg --jpeg-quality=95",
+    "render:seg02": "remotion render src/index.ts Segment02 out/segment-02.mp4 --codec=h264 --crf=18 --image-format=jpeg --jpeg-quality=95",
+    "render:1": "remotion render src/index.ts Segment01 out/segment-01.mp4 --codec=h264 --crf=18 --image-format=jpeg --jpeg-quality=95"
   },
   "dependencies": {
     "@remotion/bundler": "^4.0.260",

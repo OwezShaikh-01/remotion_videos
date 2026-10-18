@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 set -e
 
-# Resolve directory of this script and project root
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
@@ -13,19 +12,16 @@ echo "  Resolution: 1920x1080 @ 30fps"
 echo "  Duration:   32.0s (960 frames) [0:00 - 0:32]"
 echo "=========================================================="
 
-# Auto-install dependencies if node_modules is missing
 if [ ! -d "node_modules" ]; then
     echo ">> node_modules not detected. Installing dependencies..."
     npm install
 fi
 
-# Ensure output directory exists
 mkdir -p out
 
-# Execute Remotion render
 echo ">> Starting Remotion render..."
-npx remotion render src/index.ts Segment01 out/segment_1.mp4 --gl=angle --concurrency=4 "$@"
+npx remotion render src/index.ts Segment01 out/segment-01.mp4 --codec=h264 --crf=18 --image-format=jpeg --jpeg-quality=95 "$@"
 
 echo "=========================================================="
-echo "  RENDER COMPLETE: out/segment_1.mp4"
+echo "  RENDER COMPLETE: out/segment-01.mp4"
 echo "=========================================================="

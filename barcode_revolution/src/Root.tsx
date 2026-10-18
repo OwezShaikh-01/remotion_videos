@@ -1,18 +1,12 @@
-import React from "react";
-import { Composition } from "remotion";
-import { Segment01 } from "./Segment01/Segment01";
+import React from 'react';
+import {Composition} from 'remotion';
+import {Segment01} from './Segment01';
+import {Segment02} from './Segment02';
+import {W, H, FPS} from './lib';
 
-export const Root: React.FC = () => {
-  return (
-    <>
-      <Composition
-        id="Segment01"
-        component={Segment01}
-        durationInFrames={960}
-        fps={30}
-        width={1920}
-        height={1080}
-      />
-    </>
-  );
-};
+export const Root: React.FC = () => (
+  <>
+    <Composition id="Segment01" component={Segment01} durationInFrames={32 * FPS} fps={FPS} width={W} height={H} />
+    <Composition id="Segment02" component={Segment02} durationInFrames={34 * FPS} fps={FPS} width={W} height={H} />
+  </>
+);
